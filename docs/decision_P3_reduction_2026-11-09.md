@@ -41,3 +41,17 @@ Single run, XGBoost as primary model, same nested cross-validation grouped by pa
 
 Code: notebooks/08_landmark_incident_smm.ipynb section 15; notebooks/09_temporal_validation_smm.ipynb section 10.
 Outputs: data/outputs_escalation_reduced_summary.txt; data/outputs_cut2017_escalation_reduced.txt.
+
+## Result (recorded after the single run, 2026-11-09)
+- Reduced set: 13 parameters. **P3: passed** (observed Cox-Snell R2 0.0069; 16,962 admissions and 89 events
+  required; 19,268 and 101 available).
+- **C1: met** (XGBoost landmark AUROC 0.754 vs 0.749; AUPRC gain kept).
+- **C2: not met** by the primary model (XGBoost AUROC 0.749, 0.692-0.798); met by logistic regression
+  (0.764, 0.707-0.812) and the stacked ensemble (0.763, 0.703-0.811). Learners did not differ significantly
+  (XGBoost - LR -0.016, -0.041 to 0.009); the ensemble did not meet the adoption rule (+0.015, -0.004 to 0.035).
+- **C4: not met** by XGBoost (temporal AUROC 0.699, 0.620-0.778; slope 0.88, 0.51-1.25; O/E 1.55); met by
+  logistic regression (0.712, slope 0.95) and the ensemble (0.740, slope 1.09).
+- **Classification:** exploratory signal of prediction (borderline), now limited by the precision of the
+  estimates rather than by sample size. Reported as obtained; the primary model was not changed.
+Outputs: data/outputs_escalation_reduced*.txt, data/outputs_escalation_landmark_reduced.txt,
+data/outputs_cut2017_escalation_reduced.txt.

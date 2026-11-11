@@ -1,0 +1,77 @@
+==============================================================================================================
+TEMPORAL VALIDATION cut2017_escalation_reduced (cut 2017), QUICK=False, repeats=3, bootstrap B=300
+==============================================================================================================
+Development (year_hi < 2017): 11032 admissions, 8766 patients, 46 events (prevalence 0.42%)
+Discarded (interval straddles 2017): 1956 admissions, 8 events
+Test (year_lo >= 2017): 6280 admissions; removed because the patient is in development: 1234 (6 events)
+Test analysed: 5046 admissions, 4177 patients, 41 events (prevalence 0.81%)
+
+[1] Discrimination in the later period (mean over repeats; 95% patient-level bootstrap CI)
+    model               auroc               auprc                     brier sd_auroc_repeats
+       LR 0.712 (0.632-0.793) 0.035 (0.017-0.089) 0.00800 (0.00568-0.01049)           0.0053
+       RF 0.720 (0.649-0.798) 0.029 (0.018-0.057) 0.00801 (0.00569-0.01049)           0.0519
+       ET 0.728 (0.639-0.818) 0.039 (0.023-0.087) 0.00796 (0.00567-0.01041)           0.0012
+      XGB 0.699 (0.620-0.778) 0.022 (0.013-0.046) 0.00804 (0.00570-0.01053)           0.0010
+    Stack 0.740 (0.660-0.822) 0.035 (0.020-0.078) 0.00800 (0.00567-0.01048)           0.0145
+Stack_raw               0.740               0.035                   0.00799           0.0145
+
+[2] Calibration in the later period (observed prevalence 0.0081; O/E > 1 = risk underestimated)
+    model            slope             citl               oe                    ece mean predicted
+       LR 0.95 (0.60-1.28) 0.44 (0.09-0.71) 1.54 (1.09-2.02) 0.0035 (0.0024-0.0063)         0.0053
+       RF 0.90 (0.66-1.17) 0.43 (0.08-0.72) 1.53 (1.09-2.03) 0.0032 (0.0026-0.0063)         0.0053
+       ET 1.08 (0.80-1.38) 0.41 (0.08-0.70) 1.50 (1.08-1.98) 0.0043 (0.0030-0.0072)         0.0054
+      XGB 0.88 (0.51-1.25) 0.45 (0.09-0.73) 1.55 (1.10-2.05) 0.0036 (0.0026-0.0065)         0.0052
+    Stack 1.09 (0.77-1.43) 0.43 (0.09-0.71) 1.53 (1.09-2.02) 0.0040 (0.0027-0.0069)         0.0053
+Stack_raw             1.05             0.42             1.51                 0.0039         0.0054
+
+[3] Paired differences (same bootstrap samples)
+ comparison                 auroc                  auprc                        brier
+    RF - LR +0.008 (-0.018-0.033)  -0.005 (-0.042-0.009)  +0.00000 (-0.00003-0.00004)
+    ET - LR +0.016 (-0.029-0.064)  +0.005 (-0.039-0.040)  -0.00005 (-0.00013-0.00001)
+   XGB - LR -0.014 (-0.051-0.022) -0.013 (-0.045--0.002)   +0.00003 (0.00000-0.00007)
+ Stack - LR  +0.027 (0.005-0.052)  +0.000 (-0.017-0.009)  -0.00001 (-0.00003-0.00001)
+Stack - XGB  +0.041 (0.002-0.088)   +0.013 (0.006-0.032) -0.00004 (-0.00007--0.00002)
+
+[4] Events captured among the 5% / 10% of admissions with the highest predicted risk
+model          sens_top5% ppv_top5%         sens_top10% ppv_top10%
+   LR 0.195 (0.095-0.325)     0.032 0.366 (0.237-0.522)      0.030
+   RF 0.220 (0.132-0.333)     0.036 0.366 (0.254-0.478)      0.030
+   ET 0.390 (0.259-0.523)     0.063 0.455 (0.312-0.595)      0.037
+  XGB 0.171 (0.074-0.305)     0.028 0.285 (0.159-0.423)      0.023
+Stack 0.244 (0.146-0.376)     0.040 0.398 (0.271-0.537)      0.032
+
+[5] Net benefit by threshold probability
+strategy  pt=0.005  pt=0.01  pt=0.02  pt=0.03  pt=0.05   pt=0.1  pt=0.15   pt=0.2
+      LR   0.00369  0.00204  0.00083  0.00048  0.00016 -0.00003 -0.00002 -0.00002
+      RF   0.00398  0.00195  0.00084  0.00032 -0.00013 -0.00002  0.00000  0.00000
+      ET   0.00434  0.00289  0.00177  0.00064  0.00001  0.00000  0.00000  0.00000
+     XGB   0.00369  0.00135  0.00026  0.00013 -0.00007 -0.00003  0.00000  0.00000
+   Stack   0.00446  0.00236  0.00094  0.00044  0.00000 -0.00001 -0.00001  0.00000
+TreatAll   0.00314 -0.00189 -0.01212 -0.02255 -0.04408 -0.10208 -0.16691 -0.23984
+
+[6] Calibration by decile of predicted risk (mean over repeats)
+ decile   n  LR_pred  LR_obs  Stack_pred  Stack_obs
+      1 505   0.0010  0.0040      0.0013     0.0046
+      2 506   0.0017  0.0040      0.0019     0.0033
+      3 503   0.0023  0.0020      0.0025     0.0020
+      4 505   0.0028  0.0033      0.0029     0.0060
+      5 507   0.0033  0.0059      0.0034     0.0019
+      6 508   0.0039  0.0026      0.0039     0.0007
+      7 498   0.0047  0.0080      0.0046     0.0046
+      8 505   0.0060  0.0106      0.0058     0.0080
+      9 504   0.0084  0.0112      0.0084     0.0179
+     10 505   0.0186  0.0297      0.0184     0.0323
+
+[7] Hyperparameters chosen in the inner loops of the development set
+model                        config  times chosen
+   ET               depth=4,cw=None             3
+   LR                 C=1.0,cw=None             2
+   LR             C=0.1,cw=balanced             1
+   RF               depth=2,cw=None             2
+   RF depth=2,cw=balanced_subsample             1
+  XGB              depth=1,spw=sqrt             3
+
+CRITERION C4 (reduced escalation model): temporal AUROC >= 0.70 and 95% interval of the slope includes 1
+  LR    AUROC 0.712 (0.632-0.793)  slope 0.95 (0.60-1.28)  O/E 1.54 (1.09-2.02)  -> C4 met
+  XGB   AUROC 0.699 (0.620-0.778)  slope 0.88 (0.51-1.25)  O/E 1.55 (1.10-2.05)  -> C4 not met
+  Stack AUROC 0.740 (0.660-0.822)  slope 1.09 (0.77-1.43)  O/E 1.53 (1.09-2.02)  -> C4 met

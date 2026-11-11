@@ -1,0 +1,12 @@
+P3 REDUCTION FOR ESCALATION (RETURN R2), QUICK=False, bootstrap B=300
+Rule and reduced set: docs/decision_P3_reduction_2026-11-09.md (fixed before this run)
+
+escalation_reduced (label y_esc): n=19268, events=101, prevalence=0.00524, candidate parameters P=13, EPP=7.77
+                            R2_CS scenario  R2_CS max R2_CS n shrinkage n optimism n risk(+-0.05) n risk(+-0.01) n required events required  available n  available events max P supported (n,R2)
+observed (cross-validated LR, reduced set) 0.0069    0.0634       16962       4080              8            200      16962              89        19268               101                   14.8
+  -> gate P3 passes
+model  events               auroc               auprc slope  O/E sens_top10      C2      landmark auroc auroc drop AUPRC gain kept  C1
+   LR     101 0.764 (0.707-0.812) 0.041 (0.026-0.072)  1.07 1.00      0.485     met 0.761 (0.711-0.815)      0.003            1.03 met
+  XGB     101 0.749 (0.692-0.798) 0.036 (0.025-0.064)  1.05 0.97      0.439 not met 0.754 (0.699-0.811)     -0.006            1.19 met
+Stack     101 0.763 (0.703-0.811) 0.039 (0.025-0.066)  1.08 0.99      0.502     met 0.769 (0.718-0.825)     -0.006            1.07 met
+C3: not applicable. C4: notebook 09, section 10.

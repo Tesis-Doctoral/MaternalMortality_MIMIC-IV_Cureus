@@ -109,6 +109,10 @@ ax.text(37, Y2 + 0.8, "enough\nevents", ha="center", va="bottom", fontsize=6.8, 
 poly_arrow([(28, Y2 - 5), (28, 34.0)], color=WARN, ls="--")
 ax.text(29.3, 35.2, "too few events:\nfeasibility report", ha="left", va="center", fontsize=6.8, color=WARN, linespacing=1.1)
 rmark(28, 32.7, "R1", WARN)
+# P3 reduction (rule added 2026-11-09): refit once with fewer parameters; not a return
+arrow((25.0, 38.0), (12.5, 36.5), color=ACC, ls="-", conn="arc3,rad=-0.35")
+ax.text(1.6, 34.1, "P3 reduction (once):\nrefit with fewer parameters", ha="left", va="center", fontsize=6.8,
+        color=ACC, linespacing=1.1)
 
 # ---------------------------------------------------------------- block 4 (row 3)
 Y3 = 16
