@@ -70,6 +70,8 @@ Las salidas agregadas `data/outputs_*.txt` (solo conteos y métricas; sin identi
 
 ## Mapa del framework
 
+> **Nomenclatura.** En este archivo y en los archivos `_es` las etapas son E1 a E11 y las puertas P1 a P4. En el artículo en inglés, en `README.md`, en los notebooks y en los SQL en inglés las mismas etapas son **S1 a S11** (*stages*) y las puertas **G1 a G4** (*gates*), con nombre según lo que filtran: G1 puerta de definición, G2 puerta de fuga (*leakage*), G3 puerta de tamaño de muestra y G4 puerta de clasificación. La reducción en P3 se llama *sample-size reduction*.
+
 El análisis sigue un framework por etapas para modelos de predicción clínica: 11 etapas (E1 a E11), cuatro puertas (P1 a P4) y cuatro
 retornos (R1 a R4). La puerta P4 clasifica un modelo como predictor, identificador temprano o ninguno con cuatro criterios: C1 eventos ya
 presentes en el punto de predicción, C2 desenlace con tiempo, C3 sesgo de detección, C4 estabilidad en el tiempo. El encabezado de cada

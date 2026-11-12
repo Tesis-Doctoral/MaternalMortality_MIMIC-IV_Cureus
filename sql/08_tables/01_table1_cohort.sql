@@ -2,7 +2,7 @@
 -- 08_tables / 01_table1_cohort.sql
 -- Table 1 of the manuscript: characteristics of the eligible delivery
 -- hospitalizations (main analysis), overall and by SMM status.
--- Framework: E11 Reporting (descriptive table of the population fixed at gates P1 and P2).
+-- Framework: S11 Reporting (descriptive table of the population fixed at gates G1 and G2).
 -- ============================================================================
 -- Population: eligible delivery hospitalizations (is_delivery_v2 AND eligible_24h):
 --   expected 19,383 admissions, 13,710 patients, 445 with SMM.

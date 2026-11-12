@@ -1,6 +1,6 @@
 -- ============================================================================
 -- COUNT AUDIT -- v1 data compared with the current definitions
--- Framework: E4 Count audit (first version against the current definitions); reference counts for gate P1.
+-- Framework: S4 Count audit (first version against the current definitions); reference counts for gate G1.
 -- ============================================================================
 -- Purpose: measure, on the data the v1 models were trained on, counts
 -- that the v1 manuscript did not report. READ-ONLY: it only

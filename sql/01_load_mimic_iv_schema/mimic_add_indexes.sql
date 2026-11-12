@@ -1,4 +1,4 @@
--- Framework: E1 Governance and configuration (indexes of the data source; MIMIC-IV adapter).
+-- Framework: S1 Governance and configuration (indexes of the data source; MIMIC-IV adapter).
 -------------
 -- ADMISSIONS
 -------------

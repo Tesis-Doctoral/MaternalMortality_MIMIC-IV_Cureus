@@ -1,4 +1,4 @@
--- Framework: E1 Governance and configuration (technical setup of the data source; base of the MIMIC-IV adapter).
+-- Framework: S1 Governance and configuration (technical setup of the data source; base of the MIMIC-IV adapter).
 CREATE SCHEMA IF NOT EXISTS mimiciv;
 SET search_path TO mimiciv;
 

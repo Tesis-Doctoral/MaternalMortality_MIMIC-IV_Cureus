@@ -81,14 +81,14 @@ def band(x0, x1, y, title):
 Y1 = 66
 band(1, 72, 73.5, "1 · DEFINE AND AUDIT")
 band(75, 123, 73.5, "2 · FIX THE PREDICTION POINT")
-box(8.5, Y1, "E1", "Governance and\nconfiguration", card=True, fs=8.0)
-box(24.5, Y1, "E2", "Universe and\npopulation", card=True, adapt=True)
-box(40.5, Y1, "E3", "Outcome\ndefinition", card=True, adapt=True)
-box(56.5, Y1, "E4", "Count\naudit", card=True, adapt=True)
-gate(69.5, Y1, "P1", "population, unit,\ndefinition, counts")
-box(84, Y1, "E5", "Unit of analysis\nand overlap", adapt=True)
-box(100, Y1, "E6", "Prediction point\nand window", card=True, adapt=True)
-gate(115, Y1, "P2", "no information after\nthe prediction point;\ngrouped partitions")
+box(8.5, Y1, "S1", "Governance and\nconfiguration", card=True, fs=8.0)
+box(24.5, Y1, "S2", "Universe and\npopulation", card=True, adapt=True)
+box(40.5, Y1, "S3", "Outcome\ndefinition", card=True, adapt=True)
+box(56.5, Y1, "S4", "Count\naudit", card=True, adapt=True)
+gate(69.5, Y1, "G1", "definition gate:\npopulation, unit,\ndefinition, counts")
+box(84, Y1, "S5", "Unit of analysis\nand overlap", adapt=True)
+box(100, Y1, "S6", "Prediction point\nand window", card=True, adapt=True)
+gate(115, Y1, "G2", "leakage gate:\nnothing after the prediction\npoint; grouped partitions")
 for a, b in [(15.25, 17.75), (31.25, 33.75), (47.25, 49.75), (63.25, 64.5), (74.5, 77.25), (90.75, 93.25), (106.75, 110)]:
     arrow((a, Y1), (b, Y1))
 
@@ -96,11 +96,11 @@ for a, b in [(15.25, 17.75), (31.25, 33.75), (47.25, 49.75), (63.25, 64.5), (74.
 Y2 = 41
 band(1, 123, 50.5, "3 · BUILD")
 poly_arrow([(120, Y1), (124.5, Y1), (124.5, 53.5), (3, 53.5), (3, Y2), (4.75, Y2)])
-box(11.5, Y2, "E7", "Predictors", card=True, adapt=True)
-gate(28, Y2, "P3", "")
-ax.text(28, Y2 + 6.2, "sample size\n(Riley criteria)", ha="center", va="bottom", fontsize=7.2, color=MUTED, linespacing=1.15)
+box(11.5, Y2, "S7", "Predictors", card=True, adapt=True)
+gate(28, Y2, "G3", "")
+ax.text(28, Y2 + 6.2, "sample-size gate\n(Riley criteria)", ha="center", va="bottom", fontsize=7.2, color=MUTED, linespacing=1.15)
 arrow((18.25, Y2), (23, Y2))
-box(72, Y2, "E8", "Modeling, validation and metrics", w=62, h=BH,
+box(72, Y2, "S8", "Modeling, validation and metrics", w=62, h=BH,
     sub="Base learners and a stacked ensemble · nested cross-validation grouped by patient ·\n"
         "recalibration inside training · discrimination, calibration, net benefit · patient bootstrap")
 arrow((33, Y2), (41, Y2))
@@ -109,31 +109,31 @@ ax.text(37, Y2 + 0.8, "enough\nevents", ha="center", va="bottom", fontsize=6.8, 
 poly_arrow([(28, Y2 - 5), (28, 34.0)], color=WARN, ls="--")
 ax.text(29.3, 35.2, "too few events:\nfeasibility report", ha="left", va="center", fontsize=6.8, color=WARN, linespacing=1.1)
 rmark(28, 32.7, "R1", WARN)
-# P3 reduction (rule added 2026-11-09): refit once with fewer parameters; not a return
-arrow((25.0, 38.0), (12.5, 36.5), color=ACC, ls="-", conn="arc3,rad=-0.35")
-ax.text(1.6, 34.1, "P3 reduction (once):\nrefit with fewer parameters", ha="left", va="center", fontsize=6.8,
+# Sample-size reduction at G3 (rule added 2026-11-09): refit once with fewer parameters; not a return
+arrow((25.0, 38.0), (12.5, 36.5), color=ACC, ls="-", conn="arc3,rad=-0.2")
+ax.text(1.6, 34.0, "sample-size reduction (once)", ha="left", va="center", fontsize=6.8,
         color=ACC, linespacing=1.1)
 
 # ---------------------------------------------------------------- block 4 (row 3)
 Y3 = 16
 band(1, 123, 30.0, "4 · CHECK AND ACT")
 poly_arrow([(72, Y2 - BH / 2), (72, 27.6), (12, 27.6), (12, Y3 + BH / 2)])
-box(12, Y3, "E9", "Sensitivity and\nrobustness", card=True, adapt=True)
-gate(31, Y3, "P4", "")
-ax.text(31, Y3 + 6.2, "predictor, early\nidentifier or neither?", ha="center", va="bottom", fontsize=7.2,
+box(12, Y3, "S9", "Sensitivity and\nrobustness", card=True, adapt=True)
+gate(31, Y3, "G4", "")
+ax.text(31, Y3 + 6.2, "classification gate:\npredictor, early identifier\nor neither?", ha="center", va="bottom", fontsize=7.2,
         color=MUTED, linespacing=1.15)
 arrow((18.75, Y3), (26, Y3))
-box(66, Y3, "E10", "From classification to action", card=True, adapt=True, w=46, h=BH,
+box(66, Y3, "S10", "From classification to action", card=True, adapt=True, w=46, h=BH,
     sub="Predictor: prevention strategy\nEarly identifier: surveillance and prioritization of review")
 arrow((36, Y3), (43, Y3))
-box(110, Y3, "E11", "Reporting\n(TRIPOD+AI)", card=True)
+box(110, Y3, "S11", "Reporting\n(TRIPOD+AI)", card=True)
 arrow((89, Y3), (103.25, Y3))
 # P4 returns
 rmark(27.6, Y3 - 7.6, "R2", ACC); rmark(31, Y3 - 7.6, "R3", ACC); rmark(34.4, Y3 - 7.6, "R4", ACC)
 ax.plot([31, 31], [Y3 - 5, Y3 - 6.35], color=ACC, lw=1.0)
 # neither / no rungs -> report
 poly_arrow([(31, Y3 - 8.9), (31, 4.8), (110, 4.8), (110, Y3 - BH / 2)], color=WARN, ls="--")
-ax.text(70, 5.5, "no returns left and no use, or no rung left at P3: report as a negative or feasibility result",
+ax.text(70, 5.5, "no returns left and no use, or no rung left at G3: report as a negative or feasibility result",
         ha="center", va="bottom", fontsize=6.8, color=WARN)
 
 # ---------------------------------------------------------------- return targets
@@ -150,8 +150,8 @@ ax.add_patch(FancyBboxPatch((24.0, ly + 0.1), 1.0, 1.0, boxstyle="square,pad=0",
 ax.text(25.6, ly + 0.6, "stage uses the data adapter", va="center", fontsize=7.2, color=INK)
 ax.text(48, ly + 0.6, "at most two returns per outcome; the model is classified again after each one", va="center",
         fontsize=7.2, color=INK)
-ax.text(1.6, ly - 2.0, "R1: P3 → E3, next rung of the outcome ladder    R2: P4 → E3, outcome dated after the prediction point    "
-        "R3: P4 → E6, another prediction point    R4: P4 → E7, more or different predictors",
+ax.text(1.6, ly - 2.0, "R1: G3 → S3, next rung of the outcome ladder    R2: G4 → S3, outcome dated after the prediction point    "
+        "R3: G4 → S6, another prediction point    R4: G4 → S7, more or different predictors",
         va="center", fontsize=7.2, color=MUTED)
 
 os.makedirs("figures", exist_ok=True)

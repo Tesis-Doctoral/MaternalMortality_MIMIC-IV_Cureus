@@ -2,7 +2,7 @@
 -- 07_timing_audit / 04_escalation_label.sql
 -- Admission-level label for the timed outcome of return R2:
 -- escalation of care AFTER the prediction point (T = admittime + 24 h).
--- Framework: Return R2 (back to E3): admission-level label of the timed outcome (contract column label_timed).
+-- Framework: Return R2 (back to S3): admission-level label of the timed outcome (contract column label_timed).
 -- ============================================================================
 -- Same definition as 03_escalation_counts.sql (which returns counts only):
 --   (e1) ICU admission with intime after T                (icustays.intime, exact time)

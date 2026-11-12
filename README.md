@@ -68,35 +68,37 @@ The aggregate outputs `data/outputs_*.txt` (counts and metrics only; no identifi
 
 ## Framework map
 
-The analysis follows a staged framework for clinical prediction models: 11 stages (E1 to E11), four gates (P1 to P4) and four returns
-(R1 to R4). Gate P4 classifies a model as a predictor, an early identifier or neither with four criteria: C1 events already present at
+> **Nomenclature.** Stages are S1 to S11 and gates G1 to G4 (definition, leakage, sample-size and classification gates). The Spanish files (`*_es.sql`, `README_es.md`) and the decision log of 2026-11-09 use the earlier codes E1 to E11 and P1 to P4 for the same stages and gates.
+
+The analysis follows a staged framework for clinical prediction models: 11 stages (S1 to S11), four gates (G1 to G4: definition, leakage, sample-size and classification) and four returns
+(R1 to R4). Gate G4 classifies a model as a predictor, an early identifier or neither with four criteria: C1 events already present at
 the prediction point, C2 outcome with time, C3 detection bias, C4 stability over time. Every script and notebook header names the stage
 it serves (`-- Framework:` in SQL, a **Framework** line under each notebook section). Decision numbers (D1 to D22) in those lines follow
 the framework decision log; some older script comments use the earlier numbering of the analysis plan.
 
 | Stage, gate or return | What it does | Scripts and notebooks |
 |---|---|---|
-| E1 Governance and configuration | Data source, fixed settings, reference counts | `sql/01_load_mimic_iv_schema/`; section 1 of every notebook |
-| E2 Universe and population | Obstetric universe, delivery hospitalizations | `sql/02_cohort_mortality/maternal_cohort_expanded.sql`; `sql/04_labels/02_delivery_flag.sql`, `04_cohort_obstetric_flags.sql` |
-| E3 Outcome definition | CDC SMM indicators, labels, event timing | `sql/04_labels/01_smm_codes_official.sql`, `03_labels_same_admission.sql`; `sql/07_timing_audit/01_timing_flags_v3.sql`, `02_phenotype_audit_v3.sql`; notebook 07 |
-| E4 Count audit | Reference counts, reconciliation, timing classes | `sql/06_audit_counts/`; `sql/04_labels/03b_reconcile_old_labels.sql`, `06_smm_death_overlap.sql`; notebook 07 |
-| P1 | Population, unit and definition fixed; counts reproducible | `EXPECTED` check in every notebook |
-| E5 Unit of analysis and overlap | Delivery hospitalization; patient as grouping unit | notebook 01 |
-| E6 Prediction point and window | Time zero, 24-hour prediction point, eligibility, landmark rule | `sql/05_predictors/01_predictors_24h.sql`; section 3 of notebooks 02 to 08 |
-| P2 | No information after the prediction point; grouped partitions | assertions in the cross-validation functions |
-| E7 Predictors | Dictionary, coverage rule, plausibility limits, missingness indicators | `sql/05_predictors/`; notebooks 04 and 05 (predictor decisions) |
-| P3 | Minimum sample size (Riley criteria) | notebook 02, sections 7 and 9 |
+| S1 Governance and configuration | Data source, fixed settings, reference counts | `sql/01_load_mimic_iv_schema/`; section 1 of every notebook |
+| S2 Universe and population | Obstetric universe, delivery hospitalizations | `sql/02_cohort_mortality/maternal_cohort_expanded.sql`; `sql/04_labels/02_delivery_flag.sql`, `04_cohort_obstetric_flags.sql` |
+| S3 Outcome definition | CDC SMM indicators, labels, event timing | `sql/04_labels/01_smm_codes_official.sql`, `03_labels_same_admission.sql`; `sql/07_timing_audit/01_timing_flags_v3.sql`, `02_phenotype_audit_v3.sql`; notebook 07 |
+| S4 Count audit | Reference counts, reconciliation, timing classes | `sql/06_audit_counts/`; `sql/04_labels/03b_reconcile_old_labels.sql`, `06_smm_death_overlap.sql`; notebook 07 |
+| G1 Definition gate | Population, unit and definition fixed; counts reproducible | `EXPECTED` check in every notebook |
+| S5 Unit of analysis and overlap | Delivery hospitalization; patient as grouping unit | notebook 01 |
+| S6 Prediction point and window | Time zero, 24-hour prediction point, eligibility, landmark rule | `sql/05_predictors/01_predictors_24h.sql`; section 3 of notebooks 02 to 08 |
+| G2 Leakage gate | No information after the prediction point; grouped partitions | assertions in the cross-validation functions |
+| S7 Predictors | Dictionary, coverage rule, plausibility limits, missingness indicators | `sql/05_predictors/`; notebooks 04 and 05 (predictor decisions) |
+| G3 Sample-size gate | Minimum sample size (Riley criteria) | notebook 02, sections 7 and 9 |
 | R1 | Maternal death not viable: feasibility only, next rung (SMM) | `sql/02_cohort_mortality/maternal_cohort.sql`; `sql/04_labels/05_death_horizon_counts.sql`; notebook 02, section 9 |
-| E8 Modeling, validation and metrics | Nested patient-grouped validation, stacking, recalibration, bootstrap | notebook 02 (main model); notebook 03 (class imbalance) |
-| E9 Sensitivity and robustness | Criteria C1 to C4 and alternative definitions | notebook 08 (C1, C2, C3), notebook 09 (C4), notebooks 05 and 06 |
-| P4 | Classification: predictor, early identifier or neither | reports of notebooks 02, 08 and 09 |
+| S8 Modeling, validation and metrics | Nested patient-grouped validation, stacking, recalibration, bootstrap | notebook 02 (main model); notebook 03 (class imbalance) |
+| S9 Sensitivity and robustness | Criteria C1 to C4 and alternative definitions | notebook 08 (C1, C2, C3), notebook 09 (C4), notebooks 05 and 06 |
+| G4 Classification gate | Classification: predictor, early identifier or neither | reports of notebooks 02, 08 and 09 |
 | R2 | Outcome dated after the prediction point: escalation of care | `sql/07_timing_audit/03_escalation_counts.sql`, `04_escalation_label.sql`; notebook 08 section 11; notebook 09 `cut2017_escalation` |
 | R4 | More predictors: extended laboratory set | notebook 08 sections 10 and 13; notebook 09 `cut2017_landmark_labs`; `data/outputs_labs_extended.txt` (notebook 02) |
-| E10 From classification to action | Subgroups and equity | notebook 08, section 12 |
-| E11 Reporting | Aggregate reports and figures | `data/outputs_*.txt`; `scripts/fig_cohort_funnel.py` |
+| S10 From classification to action | Subgroups and equity | notebook 08, section 12 |
+| S11 Reporting | Aggregate reports and figures | `data/outputs_*.txt`; `scripts/fig_cohort_funnel.py` |
 
 Scripts of the first version of the analysis (`sql/02_cohort_mortality/` except `maternal_cohort_expanded.sql`, and `sql/03_cohort_smm/`)
-are kept for traceability; the discharge-diagnosis groups they build were removed at gate P2.
+are kept for traceability; the discharge-diagnosis groups they build were removed at gate G2.
 
 ## Installation and execution
 
