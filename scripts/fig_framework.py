@@ -128,7 +128,7 @@ box(66, Y3, "S10", "From classification to action", card=True, adapt=True, w=46,
 arrow((36, Y3), (43, Y3))
 box(110, Y3, "S11", "Reporting\n(TRIPOD+AI)", card=True)
 arrow((89, Y3), (103.25, Y3))
-# P4 returns
+# G4 returns
 rmark(27.6, Y3 - 7.6, "R2", ACC); rmark(31, Y3 - 7.6, "R3", ACC); rmark(34.4, Y3 - 7.6, "R4", ACC)
 ax.plot([31, 31], [Y3 - 5, Y3 - 6.35], color=ACC, lw=1.0)
 # neither / no rungs -> report
