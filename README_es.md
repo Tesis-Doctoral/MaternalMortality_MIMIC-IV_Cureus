@@ -1,160 +1,143 @@
-# Aprendizaje automático apilado para la morbilidad materna grave a las 24 horas (MIMIC-IV)
+# ¿Predictor o identificador temprano? Morbilidad materna grave en MIMIC-IV
 
-> **Framework.** Este repositorio aplica el framework por etapas para modelos de predicción clínica de la tesis. El framework (etapas, puertas, criterios y literatura) y el catálogo de modelos con su estado están en [StagedFramework_ClinicalPrediction](https://github.com/Tesis-Doctoral/StagedFramework_ClinicalPrediction).
+> **Framework.** Este repositorio aplica el framework por etapas de la tesis para modelos de predicción clínica. El framework (etapas, puertas, criterios y literatura) y el catálogo de modelos con su estado están en [StagedFramework_ClinicalPrediction](https://github.com/Tesis-Doctoral/StagedFramework_ClinicalPrediction).
 
-> Versión en español de [`README.md`](README.md). Si hay diferencias, prevalece la versión en inglés.
-
-Código, SQL y salidas agregadas del manuscrito **«Predicting Severe Maternal Morbidity at 24 Hours in Delivery Hospitalizations of MIMIC-IV: A Stacked Ensemble versus Logistic Regression, with a Feasibility Analysis of Maternal Death»** (manuscrito en preparación).
+Código, SQL y salidas agregadas del artículo **"Predictor or Early Identifier? A Staged Framework for Clinical Prediction Models Applied to Severe Maternal Morbidity in MIMIC-IV"** (Cureus, 2026).
 
 Autores: Emmanuel Gutiérrez Jiménez y José Duván Márquez Díaz — Departamento de Ingeniería de Sistemas, Universidad del Norte, Barranquilla, Colombia.
 
-> **Este repositorio no incluye datos a nivel de paciente.** MIMIC-IV exige acceso credencializado (ver [Acceso a los datos](#acceso-a-los-datos)). Los archivos SQL contienen solo definiciones de esquema, lógica de cohorte y listas de códigos; las salidas de los notebooks en `data/` son conteos y métricas agregados. No se publica ningún valor de `subject_id`, `hadm_id` ni `stay_id`.
+[English version](README.md)
 
-## Resumen del análisis
+> **Este repositorio no incluye datos a nivel de paciente.** MIMIC-IV requiere acceso acreditado (ver [Acceso a los datos](#acceso-a-los-datos)). Los archivos SQL solo contienen definiciones de esquema, lógica de cohorte y listas de códigos; las salidas de los notebooks en `data/` son conteos y métricas agregadas, con celdas menores de 10 suprimidas. No se publican valores de `subject_id`, `hadm_id` ni `stay_id`.
 
-El análisis predice la **morbilidad materna grave (SMM)** en **hospitalizaciones de parto** de MIMIC-IV v3.1 (2008–2022; todas las fechas están desidentificadas mediante un desplazamiento propio de cada paciente), usando solo la información disponible hasta **24 horas después del ingreso**. La muerte materna se analiza únicamente como una pregunta de factibilidad, porque hay muy pocos eventos.
+> **Estado (22/11/2026).** Los modelos M1 y M2 del catálogo del framework están completos. El notebook 10 evalúa los criterios de la puerta P4 sobre los modelos ajustados una sola vez en toda su población y aplica la puerta P3 a todo conjunto en el que se ajusta un modelo (decisión del 22/11/2026, [`docs/decision_G4_fitted_models_2026-11-22.md`](docs/decision_G4_fitted_models_2026-11-22.md)); resultados registrados en el libro de decisiones.
 
-| | Análisis |
+## Alcance
+
+| Id en el catálogo | Modelo | Desenlace | Punto de predicción | Resultado |
+|---|---|---|---|---|
+| M1 | Muerte materna | Muerte en la hospitalización del parto | Ingreso + 24 h | No pasa P3 (3 eventos): solo viabilidad; retorno R1 a la SMM |
+| M2 | Morbilidad materna grave (SMM) | Al menos uno de los 20 indicadores de los CDC | Ingreso + 24 h | **Identificador temprano** (falla C1, C3 y C4; cumple C2) |
+| M2 · R4 | SMM con laboratorios ampliados | como M2 | como M2 | Identificador temprano: la ganancia venía de qué exámenes se pidieron |
+| M2 · R2 | Escalamiento de la atención después de T | Ingreso a UCI, ventilación mecánica, indicador de SMM por procedimiento o muerte después de T | como M2 | Cumple C1 y C2; C4 no evaluable (46 eventos de desarrollo); no pasa P3 (101 eventos, 32 parámetros) |
+| M2 · R2 reducido | como R2, 13 parámetros | como R2 | como M2 | Pasa P3; **señal exploratoria de predicción**: justo por debajo de C2 (0,749), C4 no evaluable |
+
+Ficha del desenlace: [`docs/outcome_card_smm_es.md`](docs/outcome_card_smm_es.md). Libro de decisiones: [`docs/`](docs/) (un archivo por decisión, con fecha).
+
+## Datos y población
+
+MIMIC-IV v3.1 (Beth Israel Deaconess Medical Center, 2008–2022; fechas desplazadas por paciente). Hospitalizaciones de parto que seguían en curso 24 horas después del ingreso: **19.383 admisiones de 13.710 pacientes, 445 con SMM (2,30%)**. Solo el 25,6% de los eventos de SMM pudo fecharse después del punto de predicción (T = ingreso + 24 h).
+
+| | |
 |---|---|
-| Población | Hospitalizaciones de parto aún hospitalizadas 24 h después del ingreso: 19,383 admisiones (13,710 pacientes) |
-| Desenlace | SMM: al menos uno de los 20 indicadores activos de los CDC, ICD-9-CM o ICD-10-CM/PCS (445 eventos, 2.30 %) |
-| Predictores | Edad, cinco variables administrativas, hemoglobina y creatinina hasta las 24 h, indicador de faltante de creatinina |
-| Modelos | Regresión logística, Random Forest, Extra Trees, XGBoost y un conjunto apilado con metaaprendiz logístico |
-| Validación | Validación cruzada anidada agrupada por paciente (5 pliegues externos × 3 internos, 3 repeticiones); recalibración dentro de los pacientes de entrenamiento; bootstrap a nivel de paciente |
-| Resultado principal | AUROC del conjunto 0.789 (IC del 95 % 0.765–0.813), AUPRC 0.167 (prevalencia 0.023); regresión logística 0.780 / 0.154; XGBoost 0.791 / 0.163 |
-| Conjunto menos regresión logística | AUROC +0.009 (0.002–0.016); sin diferencia con XGBoost |
-| Muerte materna | 3 muertes en la misma admisión entre los partos elegibles: no es factible modelarla |
+| Predictores | Edad, cinco variables de registro, hemoglobina y creatinina hasta T, indicador de creatinina faltante (32 parámetros) |
+| Algoritmos | Regresión logística L2 (referencia), bosque aleatorio, árboles extra, XGBoost (principal) y un ensamble apilado |
+| Validación | Validación cruzada anidada agrupada por paciente (5 × 3 particiones, 3 repeticiones); recalibración dentro del entrenamiento; *bootstrap* de pacientes |
+| Validación temporal | Desarrollo con admisiones con certeza anteriores a 2017, prueba única desde 2017 |
 
-Hallazgos principales:
+## Orden de ejecución
 
-- A las 24 horas la SMM puede ordenarse con un desempeño moderado; la ganancia del apilamiento sobre una regresión logística regularizada es pequeña.
-- La ventaja del conjunto depende de un indicador de faltante de creatinina: sin él, el AUROC cae 0.085 en la regresión logística y 0.013 en el conjunto. La creatinina está presente en el 19.5 % de las admisiones sin SMM y en el 62.9 % de las que tienen SMM, de modo que el faltante refleja a quién se le hizo la prueba.
-- La calibración se reporta para todo el procedimiento, incluida la recalibración. En una validación temporal (de los años tempranos a los posteriores del mismo hospital) la discriminación se mantiene (AUROC 0.76–0.81), pero los riesgos se subestiman a medida que sube la tasa de SMM (observado/esperado hasta 2.12).
-- Los pesos de clase y SMOTE-NC no mejoraron la discriminación y exigieron recalibración.
-- Los modelos son prototipos de investigación exploratorios. Son de un solo centro, no tienen validación externa y no deben guiar decisiones clínicas individuales.
+**SQL** (PostgreSQL 13; el encabezado de cada script indica sus requisitos):
 
-## Estructura del repositorio
+| Orden | Carpeta | Crea | Etapa del framework |
+|---|---|---|---|
+| 1 | `sql/01_load_mimic_iv_schema/` | Esquema local de MIMIC-IV (ver su README) | E1 |
+| 2 | `sql/02_cohort_mortality/` (`maternal_cohort_expanded.sql`, luego el resto) | Universo obstétrico y objetos base | E2 |
+| 3 | `sql/03_cohort_smm/` (`smm_cohort.sql`, `smm_dataset.sql`) | Objetos base de la SMM | E2, E3 |
+| 4 | `sql/04_labels/` (`01` a `06`, incluido `03b`) | Listas de códigos CDC, marca de parto, etiquetas, horizontes de muerte | E2, E3, E4 |
+| 5 | `sql/05_predictors/` (`01`, `02`) | Predictores de la ventana de 24 horas y diccionario final | E6, E7 |
+| 6 | `sql/06_audit_counts/` (opcional) | Conteos del flujo de la cohorte y tablas cruzadas (solo tablas temporales) | E4, P1 |
+| 7 | `sql/07_timing_audit/` (`01` a `04`) | Momento de la evidencia de SMM, auditoría del fenotipo, etiqueta de escalamiento | E3, E4, R2 |
 
-```
-sql/
-  01_load_mimic_iv_schema/   Reconstruir localmente el esquema crudo de MIMIC-IV (ver su README)
-  02_cohort_mortality/       Universo obstétrico y mapeo de grupos de diagnóstico (tablas base)
-  03_cohort_smm/             Catálogo de SMM y conjuntos de datos base, tabla de ítems de laboratorio
-  04_labels/                 Etiquetas: listas oficiales de códigos de los CDC, bandera de parto, etiquetas
-                             de la misma admisión, regla de cohorte, horizontes de muerte, solapamiento SMM-muerte
-  05_predictors/             Predictores en la ventana de 24 horas, diccionario final y faltantes
-  06_audit_counts/           Opcional: conteos de flujo de cohorte y tablas cruzadas (audit_counts_*.sql); solo crean tablas temporales
-  07_timing_audit/           Momento de la evidencia de SMM respecto del punto de predicción (procedimientos, UCI, IRA por laboratorio),
-                             año calendario aproximado de cada admisión y auditoría del fenotipo SMM a nivel de código
-notebooks/
-  01_patient_overlap.ipynb                       Solapamiento de pacientes entre entrenamiento y evaluación con particiones por admisión
-  02_grouped_validation_smm.ipynb                Análisis principal: validación anidada agrupada de los modelos de SMM
-  03_resampling_comparison_smm.ipynb             Sin corrección vs pesos de clase vs SMOTE-NC
-  04_creatinine_indicator_sensitivity_smm.ipynb  Con y sin el indicador de faltante de creatinina
-  05_era_temporal_validation_smm.ipynb           Era calendario, versión de ICD y validación temporal
-  06_smm_renal_only_sensitivity.ipynb            Sensibilidad sin las admisiones cuyo único indicador de SMM es la insuficiencia renal aguda
-  07_smm_timing_vs_prediction_time.ipynb         Conteos: momento de los indicadores de SMM basados en procedimientos respecto del punto de predicción de 24 h
-  08_landmark_incident_smm.ipynb                 Análisis landmark y de SMM incidente (se excluye la SMM ya presente a las 24 h)
-  09_temporal_validation_smm.ipynb               Validación temporal: desarrollo antes de un año de corte (2017; 2015 como sensibilidad), prueba única después
-libraries/
-  database.py                Conexión (variables de entorno) y funciones de consulta
-  functions.py               Pequeña utilidad estadística
-data/
-  outputs_*.txt              Salidas agregadas de los notebooks (sin datos a nivel de paciente)
-docs/                        Material suplementario (por añadir)
-docker-compose.yml           Entorno local de PostgreSQL + Jupyter
-requirements.txt  .env.example  LICENSE
-```
+**Notebooks** (se ejecutan de principio a fin; cada sección nombra la etapa, puerta o criterio que atiende):
 
-Cada script SQL tiene una versión en español con el mismo nombre más el sufijo `_es` (por ejemplo `smm_cohort.sql` y `smm_cohort_es.sql`). Las sentencias SQL son idénticas; solo se traducen los comentarios. Los scripts sin sufijo son los originales.
+| Orden | Notebook | Crea (`data/`) | Etapa del framework |
+|---|---|---|---|
+| 1 | `01_patient_overlap.ipynb` | Solo conteos en consola | E5 |
+| 2 | `02_grouped_validation_smm.ipynb` | `outputs_main.txt`, `outputs_modelA.txt` (muerte materna), sensibilidades `first_admission`, `any_obstetric`, `icd10_only`, `label_ge2`, `no_icu_24h`, `labs_extended`, `icu_vars` | E8, P3, R1, E9 |
+| 3 | `03_resampling_comparison_smm.ipynb` | `outputs_resampling.txt` | E8 |
+| 4 | `04_creatinine_indicator_sensitivity_smm.ipynb` | `outputs_no_indicator.txt` | E7, E9 |
+| 5 | `05_era_temporal_validation_smm.ipynb` | `outputs_era_temporal.txt` | E9 |
+| 6 | `06_smm_renal_only_sensitivity.ipynb` | `outputs_excl_renal_only.txt` | E3, E9 |
+| 7 | `07_smm_timing_vs_prediction_time.ipynb` | `outputs_smm_timing.txt` | E3, E4 |
+| 8 | `08_landmark_incident_smm.ipynb` | `outputs_landmark*.txt`, `outputs_incident_*.txt`, `outputs_aki_lab_incident*.txt`, `outputs_c3_labs_summary.txt`, `outputs_excl_nonacute.txt`, `outputs_richer_predictors_summary.txt`, `outputs_escalation*.txt`, `outputs_g3_escalation.txt`, `outputs_main_norace.txt`, `outputs_race_subgroups.txt` | E9, P4 (C1–C3), R4, R2, P3, reducción en P3, E10 |
+| 9 | `09_temporal_validation_smm.ipynb` | `outputs_cut2017*.txt`, `outputs_cut2015.txt`, `outputs_temporal_summary.txt`, `outputs_temporal_predictors.txt` | E9, P4 (C4) |
+| 10 | `10_g4_criteria_fitted_models_es.ipynb` (inglés: sin `_es`) | `outputs_g4_fitted_models.txt` (C1 y C2 con intervalos de 95%, componentes del escalamiento), `outputs_g3_fitted_subsets.txt` | P4 (C1, C2) sobre los modelos ajustados, P3 para todo conjunto ajustado |
+| — | `scripts/g3_planning_assumed_r2.py` (no requiere la base de datos) | `outputs_g3_planning.txt` | P3, paso de planeación con un R² supuesto |
 
-Las salidas agregadas `data/outputs_*.txt` (solo conteos y métricas; sin identificadores ni filas a nivel de paciente) se publican con el código. Son, una por análisis: `main` (análisis principal), `no_indicator`, `resampling`, `era_temporal`, y los análisis de sensibilidad `first_admission`, `any_obstetric`, `icd10_only`, `label_ge2`, `no_icu_24h`, `labs_extended`, `icu_vars`, `excl_renal_only` y `smm_timing`, más `modelA` (factibilidad de la muerte).
+Los notebooks 01 a 09 están en inglés; el notebook 10 tiene versión en inglés y en español con el mismo código. Cada script SQL tiene una versión en español con el sufijo `_es` (mismas sentencias, comentarios traducidos).
 
 ## Mapa del framework
 
-> **Nomenclatura.** En este archivo y en los archivos `_es` las etapas son E1 a E11 y las puertas P1 a P4. En el artículo en inglés, en `README.md`, en los notebooks y en los SQL en inglés las mismas etapas son **S1 a S11** (*stages*) y las puertas **G1 a G4** (*gates*), con nombre según lo que filtran: G1 puerta de definición, G2 puerta de fuga (*leakage*), G3 puerta de tamaño de muestra y G4 puerta de clasificación. La reducción en P3 se llama *sample-size reduction*.
+> **Nomenclatura.** Etapas E1 a E11 y puertas P1 a P4 (definición, fuga, tamaño de muestra y clasificación). Los archivos en inglés usan S1 a S11 y G1 a G4 para las mismas etapas y puertas.
 
-El análisis sigue un framework por etapas para modelos de predicción clínica: 11 etapas (E1 a E11), cuatro puertas (P1 a P4) y cuatro
-retornos (R1 a R4). La puerta P4 clasifica un modelo como predictor, identificador temprano o ninguno con cuatro criterios: C1 eventos ya
-presentes en el punto de predicción, C2 desenlace con tiempo, C3 sesgo de detección, C4 estabilidad en el tiempo. El encabezado de cada
-script y notebook indica la etapa que atiende (`-- Framework:` en SQL, una línea **Framework** bajo cada sección de los notebooks). Los números
-de decisión (D1 a D22) de esas líneas siguen el libro de decisiones del framework; algunos comentarios antiguos usan la numeración anterior del plan.
+| Etapa, puerta o retorno | Scripts y notebooks |
+|---|---|
+| E1 Gobierno y configuración | `sql/01_load_mimic_iv_schema/`; sección 1 de cada notebook |
+| E2 Universo y población | `sql/02_cohort_mortality/maternal_cohort_expanded.sql`; `sql/04_labels/02_delivery_flag.sql`, `04_cohort_obstetric_flags.sql` |
+| E3 Definición del desenlace | `sql/04_labels/01_smm_codes_official.sql`, `03_labels_same_admission.sql`; `sql/07_timing_audit/01_timing_flags_v3.sql`, `02_phenotype_audit_v3.sql`; notebook 07 |
+| E4 Auditoría de conteos · P1 | `sql/06_audit_counts/`; `sql/04_labels/03b_reconcile_old_labels.sql`, `06_smm_death_overlap.sql`; verificación `EXPECTED` en cada notebook |
+| E5 Unidad de análisis y solapamiento | notebook 01 |
+| E6 Punto de predicción y ventana | `sql/05_predictors/01_predictors_24h.sql`; sección 3 de los notebooks 02 a 08 |
+| P2 Puerta de fuga | aserciones en las funciones de validación cruzada (ningún paciente en ambos lados) |
+| E7 Predictores | `sql/05_predictors/`; notebooks 04 y 05 |
+| P3 Puerta de tamaño de muestra | planeación: `scripts/g3_planning_assumed_r2.py`; reevaluación: notebook 02 (modelo principal y muerte materna), notebook 08 sección 14 (escalamiento), notebook 10 sección 5 (todo conjunto ajustado) |
+| R1 | muerte materna a SMM: `sql/04_labels/05_death_horizon_counts.sql`; notebook 02 |
+| E8 Modelado, validación y métricas | notebook 02 (modelo principal); notebook 03 (desbalance de clases) |
+| E9 Sensibilidad y robustez | notebooks 05, 06, 08 y 09 |
+| P4 Puerta de clasificación | notebook 08 (C1, C2, C3), notebook 09 (C4), notebook 10 (C1 y C2 sobre los modelos ajustados) |
+| R2 | `sql/07_timing_audit/03_escalation_counts.sql`, `04_escalation_label.sql`; notebook 08 secciones 11 y 14; notebook 09 |
+| R4 | notebook 08 secciones 10 y 13; notebook 09 `cut2017_landmark_labs` |
+| Reducción en P3 | notebook 08 secciones 15 y 16; notebook 09 sección 10; [`docs/decision_G3_reduction_2026-11-09.md`](docs/decision_G3_reduction_2026-11-09.md) |
+| E10 De la clasificación a la acción | notebook 08 sección 12 (raza y etnia, subgrupos) |
+| E11 Reporte | `data/outputs_*.txt`; `scripts/fig_cohort_funnel.py`, `scripts/fig_framework.py` |
 
-| Etapa, puerta o retorno | Qué hace | Scripts y notebooks |
+Los scripts de la primera versión del análisis (`sql/02_cohort_mortality/` salvo `maternal_cohort_expanded.sql`, y `sql/03_cohort_smm/`) se conservan por trazabilidad; los grupos de diagnósticos de egreso que construyen se retiraron en la puerta P2.
+
+## Libro de decisiones
+
+| Fecha | Decisión | Archivo |
 |---|---|---|
-| E1 Gobernanza y configuración | Fuente de datos, ajustes fijos, conteos de referencia | `sql/01_load_mimic_iv_schema/`; sección 1 de cada notebook |
-| E2 Universo y población | Universo obstétrico, hospitalizaciones de parto | `sql/02_cohort_mortality/maternal_cohort_expanded_es.sql`; `sql/04_labels/02_delivery_flag_es.sql`, `04_cohort_obstetric_flags_es.sql` |
-| E3 Definición del desenlace | Indicadores de SMM de los CDC, etiquetas, momento del evento | `sql/04_labels/01_smm_codes_official_es.sql`, `03_labels_same_admission_es.sql`; `sql/07_timing_audit/01_timing_flags_v3.sql`, `02_phenotype_audit_v3.sql`; notebook 07 |
-| E4 Auditoría de conteos | Conteos de referencia, conciliación, clases temporales | `sql/06_audit_counts/`; `sql/04_labels/03b_reconcile_old_labels_es.sql`, `06_smm_death_overlap_es.sql`; notebook 07 |
-| P1 | Población, unidad y definición fijas; conteos reproducibles | verificación `EXPECTED` en cada notebook |
-| E5 Unidad de análisis y solapamiento | Hospitalización de parto; paciente como unidad de agrupación | notebook 01 |
-| E6 Punto de predicción y ventana | Tiempo cero, punto a las 24 h, elegibilidad, regla landmark | `sql/05_predictors/01_predictors_24h_es.sql`; sección 3 de los notebooks 02 a 08 |
-| P2 | Nada posterior al punto de predicción; particiones agrupadas | verificaciones en las funciones de validación cruzada |
-| E7 Predictores | Diccionario, regla de cobertura, límites de plausibilidad, indicadores de faltante | `sql/05_predictors/`; notebooks 04 y 05 (decisiones de predictores) |
-| P3 | Tamaño mínimo de muestra (criterios de Riley) | notebook 02, secciones 7 y 9 |
-| R1 | Muerte materna no viable: solo viabilidad, siguiente peldaño (SMM) | `sql/02_cohort_mortality/maternal_cohort_es.sql`; `sql/04_labels/05_death_horizon_counts_es.sql`; notebook 02, sección 9 |
-| E8 Modelado, validación y métricas | Validación anidada agrupada por paciente, ensamble, recalibración, bootstrap | notebook 02 (modelo principal); notebook 03 (desbalance de clases) |
-| E9 Sensibilidad y robustez | Criterios C1 a C4 y definiciones alternativas | notebook 08 (C1, C2, C3), notebook 09 (C4), notebooks 05 y 06 |
-| P4 | Clasificación: predictor, identificador temprano o ninguno | reportes de los notebooks 02, 08 y 09 |
-| R2 | Desenlace fechado después del punto de predicción: escalamiento de la atención | `sql/07_timing_audit/03_escalation_counts.sql`, `04_escalation_label_es.sql`; notebook 08 sección 11; notebook 09 `cut2017_escalation` |
-| R4 | Más predictores: laboratorios ampliados | notebook 08 secciones 10 y 13; notebook 09 `cut2017_landmark_labs`; `data/outputs_labs_extended.txt` (notebook 02) |
-| E10 De la clasificación a la acción | Subgrupos y equidad | notebook 08, sección 12 |
-| E11 Reporte | Reportes agregados y figuras | `data/outputs_*.txt`; `scripts/fig_cohort_funnel.py` |
-
-Los scripts de la primera versión del análisis (`sql/02_cohort_mortality/` salvo `maternal_cohort_expanded_es.sql`, y `sql/03_cohort_smm/`)
-se conservan por trazabilidad; los grupos de diagnósticos de egreso que construyen se retiraron en la puerta P2.
+| 09/11/2026 | Regla nueva: reducción en P3 después de la segunda clasificación, con el conjunto reducido de predictores fijado antes de correrla | [`docs/decision_G3_reduction_2026-11-09.md`](docs/decision_G3_reduction_2026-11-09.md) |
+| 11/11/2026 | Modelo principal según eventos por parámetro | [`docs/decision_primary_learner_EPP_2026-11-11.md`](docs/decision_primary_learner_EPP_2026-11-11.md) |
+| 22/11/2026 | Criterios de P4 sobre los modelos ajustados; puerta P3 para todo conjunto en el que se ajusta un modelo; P3 en dos pasos (planeación y reevaluación); banda de tolerancia de C4 como sensibilidad; intervalos de 95% para toda cantidad de decisión | [`docs/decision_G4_fitted_models_2026-11-22_es.md`](docs/decision_G4_fitted_models_2026-11-22_es.md) |
 
 ## Instalación y ejecución
 
-1. **Obtenga acceso credencializado a MIMIC-IV** (ver [Acceso a los datos](#acceso-a-los-datos)) y descargue la exportación en CSV. El manuscrito usa **MIMIC-IV v3.1** (descargada el 18 de abril de 2025).
-2. **Cargue el esquema localmente** siguiendo `sql/01_load_mimic_iv_schema/README.md`. `docker-compose.yml` inicia PostgreSQL 13 y Jupyter; defina `MIMICIV_DATA_DIR` y `MIMICIV_CSV_DIR` en su `.env` (créelo antes como se explica en el paso 4; no hay que editar ningún script) y ejecute un solo contenedor por directorio de datos.
-3. **Construya las tablas** ejecutando los scripts SQL en este orden (el encabezado de cada script lista sus prerrequisitos; los scripts de `04_labels` y `05_predictors` crean objetos nuevos `*_v2` y no modifican las tablas base):
-   1. Universo obstétrico y objetos base sobre los que se construyen los scripts posteriores, en este orden:
-      1. `sql/02_cohort_mortality/maternal_cohort_expanded.sql` — vista de diagnósticos obstétricos.
-      2. `sql/02_cohort_mortality/maternal_cohort.sql`, luego `maternal_cohort_dataset.sql` y `maternal_cohort_diagnoses.sql` — cohorte del modelo de mortalidad, su conjunto de datos y su tabla de diagnósticos.
-      3. `sql/02_cohort_mortality/maternal_diagnoses_group_load.sql`, luego `maternal_diagnoses_group_assign.sql` — catálogo y asignación de grupos de diagnóstico.
-      4. `sql/03_cohort_smm/smm_cohort.sql`, luego `smm_dataset.sql` — objetos base de SMM y su conjunto de datos.
-   2. `sql/04_labels/` en orden numérico (`01` a `06`, incluido `03b`).
-   3. `sql/05_predictors/` en orden numérico (`01`, `02`).
-   4. *(Opcional)* `sql/06_audit_counts/` (`audit_counts.sql`, `audit_counts_part2.sql`, `audit_counts_part3.sql`) reproduce los conteos de flujo de cohorte y tablas cruzadas. Requiere los objetos de los pasos 3.1 y 3.2 y crea solo tablas temporales.
-4. **Configure sus credenciales:** copie `.env.example` a `.env` en la raíz del proyecto y escriba la contraseña de su base de datos local. Verifique que el archivo se llame `.env` (no `.env.txt`). `.env` está ignorado por git y nunca debe subirse al repositorio.
+1. **Obtenga acceso acreditado a MIMIC-IV** (ver [Acceso a los datos](#acceso-a-los-datos)) y descargue la exportación CSV (v3.1).
+2. **Cargue el esquema localmente** siguiendo `sql/01_load_mimic_iv_schema/README.md`. `docker-compose.yml` levanta PostgreSQL 13 y Jupyter; defina `MIMICIV_DATA_DIR` y `MIMICIV_CSV_DIR` en su `.env`.
+3. **Construya las tablas** con los scripts SQL en el orden anterior.
+4. **Defina sus credenciales:** copie `.env.example` a `.env` en la raíz del proyecto y escriba la contraseña de su base de datos. `.env` está excluido de git.
 5. **Cree un entorno e instale las dependencias:**
    ```powershell
-   cd MaternalMortality_MIMIC-IV
    python -m venv .venv
    .venv\Scripts\activate          # macOS/Linux: source .venv/bin/activate
    pip install -r requirements.txt
    ```
-   Seleccione este intérprete como kernel de Jupyter.
-6. **Ejecute los notebooks** en `notebooks/` de principio a fin (Restart & Run All), empezando por `02_grouped_validation_smm.ipynb` (análisis principal); `01` replica particiones por admisión para contar el solapamiento de pacientes; `03` a `06` usan las mismas particiones y ajustes (`07` solo cuenta eventos y no entrena ningún modelo). La validación anidada con bootstrap es computacionalmente pesada.
+6. **Ejecute los notebooks** en el orden anterior (Restart & Run All). La validación anidada con *bootstrap* es pesada (unos 10 a 15 minutos por validación cruzada).
 
-Los notebooks imprimen solo resultados agregados. Los archivos escritos en `data/` (por ejemplo `df_*_dataset.xlsx`) son artefactos derivados, cercanos a datos de pacientes, y están excluidos por `.gitignore`. No los suba al repositorio.
+Los archivos que se escriben en `data/` distintos de `outputs_*.txt` están cerca del nivel de paciente y están excluidos por `.gitignore`. No los suba al repositorio.
 
 ## Notas metodológicas
 
-- El momento de la predicción es 24 horas después del ingreso, y solo las admisiones que siguen hospitalizadas en ese momento entran al análisis principal (los eventos anteriores a las 24 h se reportan por separado). La etiqueta de SMM, sin embargo, es una clasificación a nivel de admisión a partir de códigos ICD, que no traen fecha para los diagnósticos y solo una fecha calendario para los procedimientos: el modelo clasifica la SMM a las 24 h; no predice su inicio. El notebook 07 cuantifica el momento de los indicadores basados en procedimientos (59 de las 445 admisiones elegibles con SMM, 13.3 %, tienen uno con certeza antes del momento de la predicción; 319, 71.7 %, se apoyan solo en códigos de diagnóstico).
-- Todas las particiones están agrupadas por paciente, de modo que ningún paciente aparece en ambos lados. La imputación, el escalado, el ajuste de hiperparámetros, el apilamiento y la recalibración se ajustan dentro de la parte de entrenamiento de cada pliegue.
-- La etiqueta de SMM es un sustituto administrativo y no se ha validado contra revisión de historias clínicas en MIMIC-IV. La tasa sube con el período calendario y coincide con el cambio de ICD-9-CM a ICD-10-CM/PCS, por lo que no se pueden separar el efecto de la codificación y el del período.
-- Datos de un solo centro y sin validación externa. La validación temporal usa pacientes posteriores del mismo hospital.
-- El reporte sigue TRIPOD+AI. La lista de verificación completa está en `docs/TRIPOD_AI_checklist_v4.docx`. Las listas de códigos (Apéndice D, Tablas A4–A6 del artículo) y las tablas de disponibilidad de predictores (Apéndice E, Tablas A7–A8) se entregan además como archivos independientes en `docs/`, con la misma numeración de tablas. Las listas de códigos se toman literalmente de `sql/04_labels/01_smm_codes_official.sql` y `sql/04_labels/02_delivery_flag.sql`. Estos documentos no contienen datos a nivel de paciente.
+- La etiqueta de SMM es una clasificación de la admisión hecha con códigos CIE, que no tienen fecha para los diagnósticos y solo tienen fecha de calendario para los procedimientos. Las clases temporales del notebook 07 y de `sql/07_timing_audit/` ubican cada evento respecto a T cuando la evidencia lo permite; el 38,4% de los eventos no puede fecharse.
+- Todas las particiones se agrupan por paciente. La imputación, el escalado, el ajuste de hiperparámetros, el ensamble y la recalibración se ajustan dentro de la parte de entrenamiento de cada partición.
+- Un solo centro, sin validación externa; la validación temporal usa pacientes posteriores del mismo hospital.
+- El reporte sigue TRIPOD+AI.
 
 ## Acceso a los datos
 
-Este repositorio **no** incluye ningún dato a nivel de paciente. Todos los análisis usan la base de datos **MIMIC-IV**, disponible en [PhysioNet](https://physionet.org/content/mimiciv/) con acceso credencializado. Para reproducir este trabajo debe:
+Este repositorio **no** incluye datos a nivel de paciente. MIMIC-IV está disponible en [PhysioNet](https://physionet.org/content/mimiciv/) para investigadores que completen el curso CITI "Data or Specimens Only Research", firmen el PhysioNet Credentialed Health Data Use Agreement y obtengan el acceso.
 
-1. Completar el curso de capacitación CITI «Data or Specimens Only Research».
-2. Firmar el acuerdo de uso de datos de salud credencializados de PhysioNet (Credentialed Health Data Use Agreement).
-3. Solicitar y obtener acceso a MIMIC-IV, y descargar su propia copia.
-
-Referencia: Johnson, A.E.W. et al. *MIMIC-IV, a freely accessible electronic health record dataset.* Scientific Data **2023**, 10, 1. https://doi.org/10.1038/s41597-022-01899-x
+Referencia: Johnson AEW, Bulgarelli L, Shen L, et al. MIMIC-IV, a freely accessible electronic health record dataset. Sci Data. 2023;10:1. https://doi.org/10.1038/s41597-022-01899-x
 
 ## Cita
 
-Si usa este código, cite el manuscrito. La referencia completa (revista, volumen, DOI) se añadirá después de la publicación.
+Por favor cite el artículo. La referencia completa (volumen, DOI) se agregará después de la publicación.
 
 ## Licencia
 
-El código se publica bajo la licencia MIT (ver `LICENSE`).
+Licencia MIT (ver `LICENSE`).
 
 ## Contacto
 

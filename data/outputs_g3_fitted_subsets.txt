@@ -1,0 +1,13 @@
+GATE G3 FOR THE SUBSETS IN WHICH A MODEL IS FITTED (QUICK=False)
+R2_CS observed (cross-validated LR of the whole-period model): main 0.0311, labs_extended 0.0517, escalation 0.0077, escalation_reduced 0.0069
+                                                     fitted on  parameters  admissions  events admissions required events required            G3
+               development period before 2017 (C4, main model)          32       11104     209                9112             172        passes
+     development period before 2017 (C4, main model, landmark)          32       11008     127                9112             105        passes
+      development period before 2017 (C4, return R4, landmark)          54       11008     127                9123             105        passes
+                development period before 2017 (C4, return R2)          32       11032      46               37098             155 does NOT pass
+development period before 2017 (C4, return R2 after reduction)          13       11032      46               16962              71 does NOT pass
+              documented incident SMM (C2), if refitted (main)          32       19027     114                9112              55        passes
+                  strict incident SMM (C2), if refitted (main)          32       18996      83               11512              50        passes
+     documented incident SMM (C2), if refitted (labs_extended)          54       19027     114               14860              89        passes
+         strict incident SMM (C2), if refitted (labs_extended)          54       18996      83               19220              84 does NOT pass
+A model whose fitting set does not pass G3 is not evaluated for the criterion that needs it (reported as not assessable).

@@ -1,0 +1,7 @@
+GATE G3, PLANNING STEP: assumed Cox-Snell R2 = 15% of its maximum (Riley et al.)
+outcome | P | admissions | events | max R2 | assumed R2 | n shrinkage | n optimism | n risk | n required | events required | G3
+maternal death (M1) | 32 | 19383 | 3 | 0.0030 | 0.0005 | 635433 | 211800 | 0 | 635433 | 98 | does NOT pass
+SMM, main model (M2) | 32 | 19383 | 445 | 0.1964 | 0.0295 | 9614 | 3194 | 34 | 9614 | 221 | passes
+SMM, return R4 (extended laboratory set) | 54 | 19383 | 445 | 0.1964 | 0.0295 | 16224 | 5390 | 34 | 16224 | 372 | passes
+escalation of care (return R2) | 32 | 19268 | 101 | 0.0634 | 0.0095 | 30120 | 10029 | 8 | 30120 | 158 | does NOT pass
+escalation of care, sample-size reduction | 13 | 19268 | 101 | 0.0634 | 0.0095 | 12236 | 4074 | 8 | 12236 | 64 | passes
