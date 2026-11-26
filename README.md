@@ -126,7 +126,7 @@ Files written into `data/` other than `outputs_*.txt` are patient-level-adjacent
 - The SMM label is an admission-level classification from ICD codes, which carry no date for diagnoses and only a calendar date for procedures. The timing classes of notebook 01 and `sql/07_timing_audit/` place each event relative to T where the evidence allows; 38.4% of the events cannot be dated.
 - All splits are grouped by patient. Imputation, scaling, tuning, stacking and recalibration are fitted inside the training part of each fold.
 - Single center, no external validation; the temporal validation uses later patients of the same hospital.
-- Reporting follows TRIPOD+AI.
+- Reporting follows TRIPOD+AI: the checklist submitted with the article is [`article/TRIPOD-AI_checklist.pdf`](article/TRIPOD-AI_checklist.pdf) (editable: `article/TRIPOD-AI_checklist.docx`). It is kept as submitted, so that it matches the published article.
 
 ## Data access
 

@@ -126,7 +126,7 @@ Los archivos que se escriben en `data/` distintos de `outputs_*.txt` están cerc
 - La etiqueta de SMM es una clasificación de la admisión hecha con códigos CIE, que no tienen fecha para los diagnósticos y solo tienen fecha de calendario para los procedimientos. Las clases temporales del notebook 01 y de `sql/07_timing_audit/` ubican cada evento respecto a T cuando la evidencia lo permite; el 38,4% de los eventos no puede fecharse.
 - Todas las particiones se agrupan por paciente. La imputación, el escalado, el ajuste de hiperparámetros, el ensamble y la recalibración se ajustan dentro de la parte de entrenamiento de cada partición.
 - Un solo centro, sin validación externa; la validación temporal usa pacientes posteriores del mismo hospital.
-- El reporte sigue TRIPOD+AI.
+- El reporte sigue TRIPOD+AI: la lista enviada con el artículo es [`article/TRIPOD-AI_checklist.pdf`](article/TRIPOD-AI_checklist.pdf) (editable: `article/TRIPOD-AI_checklist.docx`). Se conserva tal como se envió, para que coincida con el artículo publicado.
 
 ## Acceso a los datos
 
