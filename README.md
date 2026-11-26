@@ -53,19 +53,19 @@ MIMIC-IV v3.1 (Beth Israel Deaconess Medical Center, 2008–2022; dates shifted 
 
 | Order | Notebook | Creates (`data/`) | Framework stage |
 |---|---|---|---|
-| 1 | `01_patient_overlap.ipynb` | Console counts only | S5 |
-| 2 | `02_grouped_validation_smm.ipynb` | `outputs_main.txt`, `outputs_modelA.txt` (maternal death), sensitivities `first_admission`, `any_obstetric`, `icd10_only`, `label_ge2`, `no_icu_24h`, `labs_extended`, `icu_vars` | S8, G3, R1, S9 |
-| 3 | `03_resampling_comparison_smm.ipynb` | `outputs_resampling.txt` | S8 |
-| 4 | `04_creatinine_indicator_sensitivity_smm.ipynb` | `outputs_no_indicator.txt` | S7, S9 |
-| 5 | `05_era_temporal_validation_smm.ipynb` | `outputs_era_temporal.txt` | S9 |
-| 6 | `06_smm_renal_only_sensitivity.ipynb` | `outputs_excl_renal_only.txt` | S3, S9 |
-| 7 | `07_smm_timing_vs_prediction_time.ipynb` | `outputs_smm_timing.txt` | S3, S4 |
-| 8 | `08_landmark_incident_smm.ipynb` | `outputs_landmark*.txt`, `outputs_incident_*.txt`, `outputs_aki_lab_incident*.txt`, `outputs_c3_labs_summary.txt`, `outputs_excl_nonacute.txt`, `outputs_richer_predictors_summary.txt`, `outputs_escalation*.txt`, `outputs_g3_escalation.txt`, `outputs_main_norace.txt`, `outputs_race_subgroups.txt` | S9, G4 (C1–C3), R4, R2, G3, sample-size reduction, S10 |
+| 1 | `01_smm_timing_vs_prediction_time.ipynb` | `outputs_smm_timing.txt` | S1, S2, S3, S4, G1 |
+| 2 | `02_patient_overlap.ipynb` | Console counts only | S5, G2 |
+| 3 | `03_grouped_validation_smm.ipynb` | `outputs_main.txt`, `outputs_modelA.txt` (maternal death), sensitivities `first_admission`, `any_obstetric`, `icd10_only`, `label_ge2`, `no_icu_24h`, `labs_extended`, `icu_vars` | S6, S7, G3, R1, S8, S9 |
+| 4 | `04_resampling_comparison_smm.ipynb` | `outputs_resampling.txt` | S8 |
+| 5 | `05_creatinine_indicator_sensitivity_smm.ipynb` | `outputs_no_indicator.txt` | S9 (S7) |
+| 6 | `06_smm_renal_only_sensitivity.ipynb` | `outputs_excl_renal_only.txt` | S9 (S3) |
+| 7 | `07_landmark_incident_smm.ipynb` | `outputs_landmark*.txt`, `outputs_incident_*.txt`, `outputs_aki_lab_incident*.txt`, `outputs_c3_labs_summary.txt`, `outputs_excl_nonacute.txt`, `outputs_richer_predictors_summary.txt`, `outputs_escalation*.txt`, `outputs_g3_escalation.txt`, `outputs_main_norace.txt`, `outputs_race_subgroups.txt` | S9, G4 (C1–C3), R4, R2, G3, sample-size reduction, S10 |
+| 8 | `08_era_temporal_validation_smm.ipynb` | `outputs_era_temporal.txt` | S9 (C4, exploratory) |
 | 9 | `09_temporal_validation_smm.ipynb` | `outputs_cut2017*.txt`, `outputs_cut2015.txt`, `outputs_temporal_summary.txt`, `outputs_temporal_predictors.txt` | S9, G4 (C4) |
-| 10 | `10_g4_criteria_fitted_models.ipynb` (Spanish: `10_..._es.ipynb`) | `outputs_g4_fitted_models.txt` (C1 and C2 with 95% intervals, escalation components), `outputs_g3_fitted_subsets.txt` | G4 (C1, C2) on the fitted models, G3 for every fitted set |
+| 10 | `10_g4_criteria_fitted_models.ipynb` | `outputs_g4_fitted_models.txt` (C1 and C2 with 95% intervals, escalation components), `outputs_g3_fitted_subsets.txt` | G4 (C1, C2) on the fitted models, G3 for every fitted set, S10, S11 |
 | — | `scripts/g3_planning_assumed_r2.py` (no database needed) | `outputs_g3_planning.txt` | G3, planning step with an assumed R² |
 
-Notebooks 01 to 09 are in English; notebook 10 has an English and a Spanish version with the same code. Every SQL script has a Spanish version with the suffix `_es` (same statements, translated comments).
+Every notebook has an English and a Spanish version (`_es`) with the same code; only `LANG` in the first cell differs. The Spanish notebooks show their tables and messages in Spanish (`libraries/i18n.py`, `libraries/i18n_es.py`) and also write a Spanish copy of each report (`data/outputs_*_es.txt`); the English reports `data/outputs_*.txt` cited by the article are written exactly as before. Every SQL script has a Spanish version with the suffix `_es` (same statements, translated comments).
 
 ## Framework map
 
@@ -75,21 +75,21 @@ Notebooks 01 to 09 are in English; notebook 10 has an English and a Spanish vers
 |---|---|
 | S1 Governance and configuration | `sql/01_load_mimic_iv_schema/`; section 1 of every notebook |
 | S2 Universe and population | `sql/02_cohort_mortality/maternal_cohort_expanded.sql`; `sql/04_labels/02_delivery_flag.sql`, `04_cohort_obstetric_flags.sql` |
-| S3 Outcome definition | `sql/04_labels/01_smm_codes_official.sql`, `03_labels_same_admission.sql`; `sql/07_timing_audit/01_timing_flags_v3.sql`, `02_phenotype_audit_v3.sql`; notebook 07 |
-| S4 Count audit · G1 | `sql/06_audit_counts/`; `sql/04_labels/03b_reconcile_old_labels.sql`, `06_smm_death_overlap.sql`; `EXPECTED` check in every notebook |
-| S5 Unit of analysis and overlap | notebook 01 |
-| S6 Prediction point and window | `sql/05_predictors/01_predictors_24h.sql`; section 3 of notebooks 02 to 08 |
-| G2 Leakage gate | assertions in the cross-validation functions (no patient on both sides) |
-| S7 Predictors | `sql/05_predictors/`; notebooks 04 and 05 |
-| G3 Sample-size gate | planning: `scripts/g3_planning_assumed_r2.py`; reassessment: notebook 02 (main model and maternal death), notebook 08 section 14 (escalation), notebook 10 section 5 (every fitted set) |
-| R1 | maternal death to SMM: `sql/04_labels/05_death_horizon_counts.sql`; notebook 02 |
-| S8 Modeling, validation and metrics | notebook 02 (main model); notebook 03 (class imbalance) |
-| S9 Sensitivity and robustness | notebooks 05, 06, 08 and 09 |
-| G4 Classification gate | notebook 08 (C1, C2, C3), notebook 09 (C4), notebook 10 (C1 and C2 on the fitted models) |
-| R2 | `sql/07_timing_audit/03_escalation_counts.sql`, `04_escalation_label.sql`; notebook 08 sections 11 and 14; notebook 09 |
-| R4 | notebook 08 sections 10 and 13; notebook 09 `cut2017_landmark_labs` |
-| Sample-size reduction | notebook 08 sections 15 and 16; notebook 09 section 10; [`docs/decision_G3_reduction_2026-11-09.md`](docs/decision_G3_reduction_2026-11-09.md) |
-| S10 From classification to action | notebook 08 section 12 (race and ethnicity, subgroups) |
+| S3 Outcome definition | `sql/04_labels/01_smm_codes_official.sql`, `03_labels_same_admission.sql`; `sql/07_timing_audit/01_timing_flags_v3.sql`, `02_phenotype_audit_v3.sql`; notebook 01 |
+| S4 Count audit · G1 | `sql/06_audit_counts/`; `sql/04_labels/03b_reconcile_old_labels.sql`, `06_smm_death_overlap.sql`; notebook 01; `EXPECTED` check in every notebook |
+| S5 Unit of analysis and overlap | notebook 02 |
+| S6 Prediction point and window | `sql/05_predictors/01_predictors_24h.sql`; section 3 of notebooks 03 to 08 |
+| G2 Leakage gate | notebook 02 (patient overlap under admission-level splitting); assertions in the cross-validation functions (no patient on both sides) |
+| S7 Predictors | `sql/05_predictors/`; notebooks 05 and 08 |
+| G3 Sample-size gate | planning: `scripts/g3_planning_assumed_r2.py`; reassessment: notebook 03 (main model and maternal death), notebook 07 section 14 (escalation), notebook 10 section 5 (every fitted set) |
+| R1 | maternal death to SMM: `sql/04_labels/05_death_horizon_counts.sql`; notebook 03 |
+| S8 Modeling, validation and metrics | notebook 03 (main model); notebook 04 (class imbalance) |
+| S9 Sensitivity and robustness | notebooks 06, 07, 08 and 09 |
+| G4 Classification gate | notebook 07 (C1, C2, C3), notebook 09 (C4), notebook 10 (C1 and C2 on the fitted models) |
+| R2 | `sql/07_timing_audit/03_escalation_counts.sql`, `04_escalation_label.sql`; notebook 07 sections 11 and 14; notebook 09 |
+| R4 | notebook 07 sections 10 and 13; notebook 09 `cut2017_landmark_labs` |
+| Sample-size reduction | notebook 07 sections 15 and 16; notebook 09 section 10; [`docs/decision_G3_reduction_2026-11-09.md`](docs/decision_G3_reduction_2026-11-09.md) |
+| S10 From classification to action | notebook 07 section 12 (race and ethnicity, subgroups) |
 | S11 Reporting | `data/outputs_*.txt`; `scripts/fig_cohort_funnel.py`, `scripts/fig_framework.py` |
 
 Scripts of the first version of the analysis (`sql/02_cohort_mortality/` except `maternal_cohort_expanded.sql`, and `sql/03_cohort_smm/`) are kept for traceability; the discharge-diagnosis groups they build were removed at gate G2.
@@ -120,7 +120,7 @@ Files written into `data/` other than `outputs_*.txt` are patient-level-adjacent
 
 ## Methodological notes
 
-- The SMM label is an admission-level classification from ICD codes, which carry no date for diagnoses and only a calendar date for procedures. The timing classes of notebook 07 and `sql/07_timing_audit/` place each event relative to T where the evidence allows; 38.4% of the events cannot be dated.
+- The SMM label is an admission-level classification from ICD codes, which carry no date for diagnoses and only a calendar date for procedures. The timing classes of notebook 01 and `sql/07_timing_audit/` place each event relative to T where the evidence allows; 38.4% of the events cannot be dated.
 - All splits are grouped by patient. Imputation, scaling, tuning, stacking and recalibration are fitted inside the training part of each fold.
 - Single center, no external validation; the temporal validation uses later patients of the same hospital.
 - Reporting follows TRIPOD+AI.

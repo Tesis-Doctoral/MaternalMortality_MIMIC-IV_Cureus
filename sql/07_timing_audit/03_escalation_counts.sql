@@ -7,7 +7,7 @@
 -- Components (each with its own time stamp):
 --   (e1) ICU admission with intime after T                (icustays.intime, exact time)
 --   (e2) invasive mechanical ventilation started after T  (procedureevents itemid 225792, exact time; ICU only)
---   (e3) procedure-based SMM indicator dated after T      (procedures_icd.chartdate >= T, same rule as notebook 07)
+--   (e3) procedure-based SMM indicator dated after T      (procedures_icd.chartdate >= T, same rule as notebook 01)
 --   (e4) in-hospital death after T                        (admissions.deathtime)
 -- Population: eligible delivery hospitalizations WITHOUT an ICU admission before T
 -- (they are already escalated at the prediction point).

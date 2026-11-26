@@ -1,0 +1,10 @@
+Partos elegibles: 19383 admisiones, 13710 pacientes, muertes en la misma admisión = 3
+Obstétricas elegibles (cualquiera): 23625 admisiones, 14602 pacientes, muertes en la misma admisión = 5
+
+Modelo A (mortalidad hospitalaria, partos elegibles; R2 SUPUESTO, sin modelo ajustado): n=19383, eventos=3, prevalencia=0.00015, parámetros candidatos P=32, EPP=0.09
+          escenario de R2_CS  R2_CS R2_CS máx. n encogimiento n optimismo n riesgo(±-0.05) n riesgo(±-0.01) n requerido eventos requeridos  n disponible  eventos disponibles P máx. soportado (n, R2)
+15% del máximo (por defecto) 0.0005     0.0030         635433      211800                0                6      635433                 98         19383                    3                      1.0
+              30% del máximo 0.0009     0.0030         317637      211752                0                6      317637                 49         19383                    3                      2.0
+              50% del máximo 0.0015     0.0030         190518      211688                0                6      211688                 33         19383                    3                      3.3
+
+Regla práctica como contexto: 10 eventos por parámetro candidato exigirían 320 muertes; hay 3.

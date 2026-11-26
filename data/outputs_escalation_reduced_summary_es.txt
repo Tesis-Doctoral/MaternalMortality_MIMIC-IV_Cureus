@@ -1,0 +1,12 @@
+REDUCCIÓN POR TAMAÑO DE MUESTRA (P3) PARA EL ESCALAMIENTO (RETORNO R2), QUICK=False, bootstrap B=300
+Regla y conjunto reducido: docs/decision_G3_reduction_2026-11-09.md (fijados antes de esta corrida)
+
+escalation_reduced (etiqueta y_esc): n=19268,, eventos=101,, prevalencia=0.00524,, parámetros candidatos P=13,, EPP=7.77
+                        escenario de R2_CS  R2_CS R2_CS máx. n encogimiento n optimismo n riesgo(±-0.05) n riesgo(±-0.01) n requerido eventos requeridos  n disponible  eventos disponibles P máx. soportado (n, R2)
+observed (cross-validated LR, reduced set) 0.0069     0.0634          16962        4080                8              200       16962                 89         19268                  101                     14.8
+  -> la puerta P3 pasa
+modelo  eventos               AUROC               AUPRC pendiente  O/E sens. 0% superior        C2      AUROC landmark caída del AUROC ganancia del AUPRC conservada     C1
+    LR      101 0.764 (0.707-0.812) 0.041 (0.026-0.072)      1.07 1.00             0.485    cumple 0.761 (0.711-0.815)           0.003                          1.03 cumple
+   XGB      101 0.749 (0.692-0.798) 0.036 (0.025-0.064)      1.05 0.97             0.439 no cumple 0.754 (0.699-0.811)          -0.006                          1.19 cumple
+ Stack      101 0.763 (0.703-0.811) 0.039 (0.025-0.066)      1.08 0.99             0.502    cumple 0.769 (0.718-0.825)          -0.006                          1.07 cumple
+C3: no aplica. C4: notebook 09, sección 10.

@@ -1,0 +1,94 @@
+==============================================================================================================
+ANÁLISIS escalation_landmark_reduced: 19198 admisiones, 13584 pacientes, 90 eventos (0.47%), numéricas=3, binarias=5, categóricas=1
+Repeticiones=3, pliegues externos=5, pliegues internos=3, bootstrap B=300, QUICK=False
+==============================================================================================================
+
+[0] Pacientes por partición externa (se muestra la repetición 1; se verificó que ninguna partición comparta pacientes entre entrenamiento y prueba)
+ pliegue  adm. entren.  pac. entren.  eventos entren.  pac. con evento entren.  adm. prueba  pac. prueba  eventos prueba  pac. con evento prueba  pacientes compartidos
+       1         15364         10869               68                       68         3834         2715              22                      22                      0
+       2         15391         10869               70                       70         3807         2715              20                      20                      0
+       3         15343         10865               80                       80         3855         2719              10                      10                      0
+       4         15351         10867               71                       71         3847         2717              19                      19                      0
+       5         15343         10866               71                       71         3855         2718              19                      19                      0
+    En las 15 particiones: pacientes de prueba por pliegue 2713-2720, pacientes de prueba con evento por pliegue 10-23, pacientes en ambos lados: 0
+
+[1] Discriminación y exactitud global (media de las repeticiones; IC 95% por bootstrap de conglomerados)
+    prevalencia = 0.0047  (el AUPRC de un modelo sin información es igual a la prevalencia)
+   modelo               AUROC               AUPRC                     Brier DE AUROC entre repeticiones DE AUPRC entre repeticiones
+       LR 0.761 (0.711-0.815) 0.038 (0.025-0.066) 0.00461 (0.00369-0.00561)                      0.0039                      0.0058
+       RF 0.766 (0.714-0.823) 0.032 (0.022-0.052) 0.00462 (0.00372-0.00563)                      0.0100                      0.0057
+       ET 0.755 (0.703-0.812) 0.031 (0.020-0.051) 0.00461 (0.00371-0.00561)                      0.0019                      0.0021
+      XGB 0.754 (0.699-0.811) 0.037 (0.022-0.074) 0.00460 (0.00370-0.00561)                      0.0131                      0.0030
+    Stack 0.769 (0.718-0.825) 0.037 (0.024-0.066) 0.00460 (0.00369-0.00561)                      0.0036                      0.0033
+Stack_raw               0.769               0.036                   0.00460                      0.0030                      0.0033
+
+[2] Calibración (pendiente ideal 1; calibración global ideal 0; O/E ideal 1; ECE con 10 grupos por cuantiles)
+   modelo        pendiente               CITL              O/E                    ECE
+       LR 1.06 (0.92-1.21) -0.00 (-0.23-0.20) 1.00 (0.80-1.22) 0.0011 (0.0010-0.0022)
+       RF 0.98 (0.84-1.12) -0.10 (-0.32-0.11) 0.91 (0.73-1.11) 0.0009 (0.0010-0.0020)
+       ET 1.01 (0.88-1.15) -0.05 (-0.26-0.16) 0.95 (0.77-1.17) 0.0011 (0.0011-0.0022)
+      XGB 1.01 (0.84-1.16) -0.04 (-0.27-0.17) 0.96 (0.77-1.18) 0.0010 (0.0011-0.0021)
+    Stack 1.07 (0.94-1.21) -0.02 (-0.24-0.19) 0.98 (0.79-1.20) 0.0012 (0.0011-0.0023)
+Stack_raw             1.04              -0.03             0.97                 0.0012
+
+[3] Diferencias pareadas (mismas muestras bootstrap); la última fila compara el ensamble con XGBoost
+comparación (primero menos segundo)                 AUROC                  AUPRC                       Brier
+                            RF - LR +0.005 (-0.024-0.038) -0.006 (-0.020--0.000) +0.00002 (-0.00001-0.00004)
+                            ET - LR -0.006 (-0.031-0.022)  -0.007 (-0.026-0.005) +0.00000 (-0.00003-0.00004)
+                           XGB - LR -0.007 (-0.034-0.020)  -0.001 (-0.008-0.014) -0.00001 (-0.00003-0.00001)
+                         Stack - LR +0.008 (-0.005-0.025)  -0.001 (-0.005-0.004) -0.00001 (-0.00003-0.00000)
+                        Stack - XGB +0.015 (-0.005-0.032)  +0.000 (-0.013-0.006) -0.00000 (-0.00002-0.00001)
+
+[4] Eventos captados en el 5% / 10% de las admisiones con mayor riesgo predicho
+modelo   sens. 5% superior VPP 5% superior   sens. 0% superior VPP 0% superior
+    LR 0.407 (0.327-0.495)           0.038 0.493 (0.401-0.576)           0.023
+    RF 0.407 (0.324-0.497)           0.038 0.519 (0.431-0.608)           0.024
+    ET 0.393 (0.305-0.486)           0.037 0.515 (0.420-0.600)           0.024
+   XGB 0.356 (0.273-0.435)           0.033 0.467 (0.381-0.552)           0.022
+ Stack 0.422 (0.338-0.514)           0.040 0.511 (0.415-0.599)           0.024
+
+[5] Beneficio neto (curva de decisión) en las probabilidades umbral indicadas
+estrategia  pt=0.005  pt=0.01  pt=0.02  pt=0.03  pt=0.05   pt=0.1  pt=0.15   pt=0.2
+        LR   0.00178  0.00140  0.00093  0.00055  0.00020 -0.00004 -0.00004 -0.00005
+        RF   0.00191  0.00147  0.00086  0.00048  0.00010 -0.00014 -0.00010 -0.00004
+        ET   0.00181  0.00138  0.00101  0.00065  0.00014 -0.00012 -0.00002 -0.00001
+       XGB   0.00179  0.00115  0.00070  0.00048  0.00020  0.00001  0.00003 -0.00003
+     Stack   0.00174  0.00151  0.00090  0.00057  0.00017  0.00000 -0.00002 -0.00002
+  TreatAll  -0.00031 -0.00537 -0.01562 -0.02609 -0.04770 -0.10590 -0.17096 -0.24414
+ TreatNone   0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+    Diferencias pareadas de beneficio neto:
+comparación                    pt=0.005                     pt=0.01                      pt=0.02                     pt=0.03                     pt=0.05                      pt=0.1
+ Stack - LR -0.00004 (-0.00017-0.00010) +0.00012 (-0.00001-0.00027)  -0.00003 (-0.00016-0.00011) +0.00002 (-0.00011-0.00015) -0.00003 (-0.00015-0.00009) +0.00004 (-0.00003-0.00011)
+    RF - LR +0.00014 (-0.00007-0.00041) +0.00007 (-0.00014-0.00029)  -0.00007 (-0.00026-0.00013) -0.00007 (-0.00023-0.00009) -0.00011 (-0.00026-0.00006) -0.00010 (-0.00024-0.00004)
+    ET - LR +0.00003 (-0.00024-0.00032) -0.00001 (-0.00024-0.00023)  +0.00008 (-0.00011-0.00032) +0.00009 (-0.00017-0.00037) -0.00007 (-0.00028-0.00013) -0.00008 (-0.00025-0.00009)
+   XGB - LR +0.00001 (-0.00022-0.00029) -0.00025 (-0.00048-0.00000) -0.00023 (-0.00041--0.00006) -0.00007 (-0.00021-0.00007) -0.00000 (-0.00012-0.00014) +0.00005 (-0.00003-0.00013)
+Stack - XGB -0.00005 (-0.00029-0.00019)  +0.00037 (0.00015-0.00063)   +0.00020 (0.00007-0.00033) +0.00009 (-0.00000-0.00021) -0.00003 (-0.00010-0.00005) -0.00001 (-0.00009-0.00006)
+
+[8] Calibración por decil de riesgo predicho (predicciones de prueba externa; media de las repeticiones)
+ decil    n  LR_pred  LR_obs  Stack_pred  Stack_obs
+     1 1922   0.0012  0.0019      0.0013     0.0014
+     2 1919   0.0017  0.0014      0.0018     0.0023
+     3 1919   0.0021  0.0019      0.0021     0.0009
+     4 1919   0.0024  0.0017      0.0024     0.0012
+     5 1920   0.0028  0.0019      0.0028     0.0026
+     6 1922   0.0032  0.0024      0.0032     0.0026
+     7 1917   0.0037  0.0040      0.0036     0.0031
+     8 1920   0.0045  0.0038      0.0044     0.0056
+     9 1920   0.0059  0.0047      0.0059     0.0033
+    10 1920   0.0195  0.0231      0.0204     0.0240
+
+[7] Hiperparámetros elegidos en los ciclos internos (de 15 ajustes externos por algoritmo)
+algoritmo                 configuración  ajustes externos
+       ET depth=4,cw=balanced_subsample                10
+       ET              depth=12,cw=None                 2
+       ET               depth=4,cw=None                 2
+       ET               depth=8,cw=None                 1
+       LR             C=1.0,cw=balanced                 8
+       LR             C=0.1,cw=balanced                 4
+       LR                 C=1.0,cw=None                 3
+       RF depth=2,cw=balanced_subsample                10
+       RF               depth=8,cw=None                 2
+       RF               depth=2,cw=None                 2
+       RF depth=4,cw=balanced_subsample                 1
+      XGB              depth=1,spw=sqrt                 9
+      XGB              depth=2,spw=sqrt                 6

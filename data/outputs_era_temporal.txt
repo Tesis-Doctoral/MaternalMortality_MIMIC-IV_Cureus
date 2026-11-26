@@ -22,7 +22,7 @@ era
 2017 - 2019         2342           1
 2020 - 2022          931           0
 
-[1] Cross-validated performance by group (out-of-fold predictions of the main analysis; patients are in the same folds as notebooks 02/04)
+[1] Cross-validated performance by group (out-of-fold predictions of the main analysis; patients are in the same folds as notebooks 03/05)
     O/E and slope come from probabilities calibrated on the whole development sample, so O/E far from 1 in one group means a calibration shift between groups.
                   group model   adm  patients  events   prev               AUROC               AUPRC              O/E            slope
 All eligible deliveries    LR 19383     13710     445 0.0230 0.780 (0.755-0.804) 0.154 (0.123-0.194) 1.00 (0.91-1.09) 0.99 (0.92-1.07)

@@ -1,0 +1,13 @@
+PUERTA P3 PARA LOS SUBCONJUNTOS EN LOS QUE SE AJUSTA UN MODELO (QUICK=False)
+R2_CS observado (LR con validación cruzada del modelo del período completo): main 0.0311, labs_extended 0.0517, escalation 0.0077, escalation_reduced 0.0069
+                                                   ajustado en  parámetros  admisiones  eventos admisiones requeridas eventos requeridos      P3
+               development period before 2017 (C4, main model)          32       11104      209                  9112                172    pasa
+     development period before 2017 (C4, main model, landmark)          32       11008      127                  9112                105    pasa
+      development period before 2017 (C4, return R4, landmark)          54       11008      127                  9123                105    pasa
+                development period before 2017 (C4, return R2)          32       11032       46                 37098                155 NO pasa
+development period before 2017 (C4, return R2 after reduction)          13       11032       46                 16962                 71 NO pasa
+              documented incident SMM (C2), if refitted (main)          32       19027      114                  9112                 55    pasa
+                  strict incident SMM (C2), if refitted (main)          32       18996       83                 11512                 50    pasa
+     documented incident SMM (C2), if refitted (labs_extended)          54       19027      114                 14860                 89    pasa
+         strict incident SMM (C2), if refitted (labs_extended)          54       18996       83                 19220                 84 NO pasa
+Un modelo cuyo conjunto de ajuste no pasa P3 no se evalúa en el criterio que lo necesita (se reporta como no evaluable).

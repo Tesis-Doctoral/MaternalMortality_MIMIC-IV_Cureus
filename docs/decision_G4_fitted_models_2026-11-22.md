@@ -7,7 +7,7 @@ Spanish version: [`decision_G4_fitted_models_2026-11-22_es.md`](decision_G4_fitt
 
 ## Context
 
-Notebook 08 evaluated criteria C1 (landmark population) and C2 (documented and strict incident SMM) by **refitting** the full model, with its 32 parameters, inside each subset: 285, 114 and 83 events. The same happened in the development periods of the temporal validation (criterion C4, notebook 09): 209 events for the main model and 46 for escalation of care. Gate G3 had been applied only to the whole population of each outcome, so these fits were never checked against it. With 46 events, the development period of the escalation model is below what G3 requires for 32 parameters (194 events) and for the 13 of the reduced model (89 events).
+Notebook 07 evaluated criteria C1 (landmark population) and C2 (documented and strict incident SMM) by **refitting** the full model, with its 32 parameters, inside each subset: 285, 114 and 83 events. The same happened in the development periods of the temporal validation (criterion C4, notebook 09): 209 events for the main model and 46 for escalation of care. Gate G3 had been applied only to the whole population of each outcome, so these fits were never checked against it. With 46 events, the development period of the escalation model is below what G3 requires for 32 parameters (194 events) and for the 13 of the reduced model (89 events).
 
 ## Rule (added to the framework on this date)
 
@@ -18,7 +18,7 @@ Notebook 08 evaluated criteria C1 (landmark population) and C2 (documented and s
 
 ## Analyses (single run)
 
-Notebook `10_g4_criteria_fitted_models.ipynb`, same seed, folds, repeats and grids as notebooks 02 and 08, bootstrap B = 1,000:
+Notebook `10_g4_criteria_fitted_models.ipynb`, same seed, folds, repeats and grids as notebooks 03 and 07, bootstrap B = 1,000:
 
 - Four models fitted once each: main model (M2), return R4 (extended laboratory set), return R2 (escalation, 32 parameters) and return R2 after the sample-size reduction (13 parameters).
 - C1 and C2 on their out-of-fold predictions; for escalation, also each component against admissions without escalation and the overlap of the components.
@@ -28,11 +28,11 @@ Outputs: `data/outputs_g4_fitted_models.txt` and `data/outputs_g3_fitted_subsets
 
 ## What the earlier results become
 
-The classifications of notebooks 08 and 09 are kept in their reports for traceability. The classification at gate G4 is restated with the results of notebook 10 and recorded below.
+The classifications of notebooks 07 and 09 are kept in their reports for traceability. The classification at gate G4 is restated with the results of notebook 10 and recorded below.
 
 ## Result
 
-Run of 2026-11-22 with the software versions of the article (scikit-learn 1.6.1, XGBoost 3.0.2); full-population values reproduce notebook 02 (XGBoost AUROC 0.791). XGBoost, 95% patient-bootstrap intervals:
+Run of 2026-11-22 with the software versions of the article (scikit-learn 1.6.1, XGBoost 3.0.2); full-population values reproduce notebook 03 (XGBoost AUROC 0.791). XGBoost, 95% patient-bootstrap intervals:
 
 | Model | C1 | C2 | C4 | Classification |
 |---|---|---|---|---|

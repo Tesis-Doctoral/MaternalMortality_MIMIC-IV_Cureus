@@ -8,7 +8,7 @@
 --   (1) SMM is defined for the whole admission; part of the events precede T.
 --         -> classify every SMM admission as prevalent / indeterminate /
 --            incident (documented) / untimed, using
---              * procedure indicators (calendar date, as in notebook 07),
+--              * procedure indicators (calendar date, as in notebook 01),
 --              * ICU admission before T,
 --              * acute kidney injury (AKI) timed from serum creatinine
 --                (labevents.charttime), the dominant SMM indicator.
@@ -108,7 +108,7 @@ WITH base AS (
     FROM mimiciv.predictors_24h_v2 p
     WHERE p.eligible_24h AND p.is_delivery_v2
 ),
-pr AS (   -- procedure-based SMM indicators with their timing (same rule as notebook 07)
+pr AS (   -- procedure-based SMM indicators with their timing (same rule as notebook 01)
     SELECT b.hadm_id,
            BOOL_OR(CAST(r.chartdate AS TIMESTAMP) + INTERVAL '1 day' <= b.t_pred) AS proc_before,
            BOOL_OR(CAST(r.chartdate AS TIMESTAMP) + INTERVAL '1 day' >  b.t_pred

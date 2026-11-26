@@ -6,13 +6,14 @@ model               auroc auprc slope  O/E      C2 landmark auroc auroc drop gai
 Stack 0.763 (0.703-0.810) 0.040  1.08 0.99     met          0.770     -0.007      1.00 met
 
 XGBoost configurations chosen in the inner loops (full population):
-depth=1,spw=sqrt,lr=0.02,mcw=20    4
-depth=1,spw=sqrt,lr=0.05,mcw=5     2
-depth=2,spw=sqrt,lr=0.1,mcw=5      2
-depth=3,spw=sqrt,lr=0.05,mcw=20    1
-depth=2,spw=sqrt,lr=0.02,mcw=20    1
-depth=1,spw=sqrt,lr=0.02,mcw=5     1
-depth=3,spw=sqrt,lr=0.1,mcw=20     1
-depth=1,spw=sqrt,lr=0.05,mcw=20    1
-depth=2,spw=sqrt,lr=0.1,mcw=20     1
-depth=1,spw=sqrt,lr=0.1,mcw=20     1
+                                 count
+depth=1,spw=sqrt,lr=0.02,mcw=20      4
+depth=1,spw=sqrt,lr=0.05,mcw=5       2
+depth=2,spw=sqrt,lr=0.1,mcw=5        2
+depth=3,spw=sqrt,lr=0.05,mcw=20      1
+depth=2,spw=sqrt,lr=0.02,mcw=20      1
+depth=1,spw=sqrt,lr=0.02,mcw=5       1
+depth=3,spw=sqrt,lr=0.1,mcw=20       1
+depth=1,spw=sqrt,lr=0.05,mcw=20      1
+depth=2,spw=sqrt,lr=0.1,mcw=20       1
+depth=1,spw=sqrt,lr=0.1,mcw=20       1

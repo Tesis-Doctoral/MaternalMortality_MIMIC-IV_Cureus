@@ -76,7 +76,8 @@ model AUROC full AUROC landmark            AUROC drop  AUPRC gain kept  C1
 Stack      0.783          0.783 -0.000 (-0.015-0.013) 1.17 (1.06-1.33) met
 
 Overlap of the components among escalation events (an event can have several components)
-pattern
+                       events
+pattern                      
 ICU only                   39
 death only                <10
 procedure only             10
@@ -111,7 +112,8 @@ model AUROC full AUROC landmark            AUROC drop  AUPRC gain kept  C1
 Stack      0.763          0.766 -0.003 (-0.022-0.013) 1.15 (1.05-1.31) met
 
 Overlap of the components among escalation events (an event can have several components)
-pattern
+                       events
+pattern                      
 ICU only                   39
 death only                <10
 procedure only             10

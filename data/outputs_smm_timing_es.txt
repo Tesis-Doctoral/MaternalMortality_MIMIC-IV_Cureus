@@ -1,0 +1,38 @@
+==============================================================================================================
+Admisiones con SMM entre las hospitalizaciones de parto elegibles: 445  (esperadas 445) [OK]
+T = hora de admisión + 24 h; momento según la fecha calendario de cada indicador de SMM por procedimiento (ver la tabla del método)
+==============================================================================================================
+
+[1] Categoría de cada admisión con SMM (A a D); las últimas columnas separan según haya un indicador por diagnóstico
+con diagnóstico                                            sin indicador por diagnóstico  con indicador por diagnóstico  total  % de la SMM
+categoría                                                                                                                                  
+A. a procedure indicator certainly before T                                           23                             36     59         13.3
+B. none certainly before T, at least one ambiguous                                     6                             19     25          5.6
+C. procedure indicators, all certainly after T                                        14                             28     42          9.4
+D. no procedure indicator (diagnosis codes only; no time)                              0                            319    319         71.7
+    Suma de las categorías: 445  [OK]
+
+    Lectura: al menos 59 admisiones con SMM (13.3%) tenían un indicador por procedimiento con certeza antes de T; otras 25 (5.6%) no se pueden ordenar;
+    42 (9.4%) tienen indicadores por procedimiento solo después de T; 319 (71.7%) dependen solo de códigos de diagnóstico y no se pueden ubicar en el tiempo.
+
+[2] Indicadores por procedimiento: admisiones según el momento del indicador (una admisión con el mismo indicador en días distintos puede aparecer en
+    varias de las tres primeras columnas, por lo que no tienen que sumar la última, que cuenta cada admisión una vez)
+momento                       antes  ambiguo  después  admisiones distintas con el indicador
+indicador                                                                                   
+Hysterectomy                     38       13       28                                     79
+Ventilation                      27       12       21                                     59
+Conversion of cardiac rhythm      0        3        3                                      6
+
+==============================================================================================================
+VERIFICACIONES DE CONSISTENCIA
+==============================================================================================================
+
+[3] Hospitalizaciones de parto no elegibles a las 24 h: 42 (esperadas 42), con SMM 2 (esperadas 2), con muerte 1 (esperadas 1)  [OK]
+
+[4] Muertes hospitalarias del universo obstétrico según su momento respecto a T
+                                                       momento tipo de admisión  muertes
+                                                en T o después            parto        3
+                                                en T o después  otra obstétrica        2
+antes de T (la estancia terminó antes del punto de predicción)            parto        1
+antes de T (la estancia terminó antes del punto de predicción)  otra obstétrica        4
+    Muertes: 10 (esperadas 10); antes de T: 5 (esperadas 5)  [OK]

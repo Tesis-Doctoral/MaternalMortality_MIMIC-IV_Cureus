@@ -1,0 +1,74 @@
+==============================================================================================================
+VALIDACIÓN TEMPORAL cut2017_landmark (corte 2017), QUICK=False, repeticiones=3, bootstrap B=300
+==============================================================================================================
+Desarrollo (year_hi < 2017): 11008 admisiones, 8747 pacientes, 127 eventos (prevalencia 1.15%)
+Descartadas (el intervalo cruza 2017): 1948 admisiones, 21 eventos
+Prueba (year_lo >= 2017): 6242 admisiones; retiradas porque la paciente está en desarrollo: 1225 (20 eventos)
+Prueba analizada: 5017 admisiones, 4151 pacientes, 117 eventos (prevalencia 2.33%)
+
+[1] Discriminación en el período posterior (media de las repeticiones; IC 95% por bootstrap de pacientes)
+   modelo               AUROC               AUPRC                     Brier DE AUROC entre repeticiones
+       LR 0.659 (0.614-0.705) 0.053 (0.035-0.092) 0.02266 (0.01924-0.02681)                      0.0079
+       RF 0.651 (0.603-0.703) 0.050 (0.039-0.078) 0.02265 (0.01928-0.02686)                      0.0049
+       ET 0.665 (0.617-0.717) 0.062 (0.046-0.104) 0.02263 (0.01923-0.02684)                      0.0066
+      XGB 0.670 (0.627-0.713) 0.048 (0.038-0.071) 0.02270 (0.01932-0.02690)                      0.0288
+    Stack 0.666 (0.620-0.715) 0.052 (0.039-0.080) 0.02264 (0.01926-0.02684)                      0.0085
+Stack_raw               0.666               0.052                   0.02264                      0.0085
+
+[2] Calibración en el período posterior (prevalencia observada 0.0233; O/E > 1 = riesgo subestimado)
+   modelo        pendiente             CITL              O/E                    ECE riesgo medio predicho
+       LR 0.78 (0.53-1.01) 0.49 (0.32-0.67) 1.61 (1.37-1.91) 0.0089 (0.0067-0.0138)                0.0145
+       RF 0.74 (0.52-0.99) 0.51 (0.34-0.70) 1.65 (1.39-1.97) 0.0095 (0.0072-0.0142)                0.0142
+       ET 0.91 (0.66-1.20) 0.54 (0.37-0.72) 1.68 (1.43-2.01) 0.0099 (0.0074-0.0147)                0.0139
+      XGB 0.82 (0.58-1.04) 0.53 (0.35-0.71) 1.67 (1.41-1.98) 0.0098 (0.0075-0.0143)                0.0140
+    Stack 0.83 (0.58-1.09) 0.51 (0.34-0.69) 1.64 (1.39-1.96) 0.0092 (0.0074-0.0144)                0.0142
+Stack_raw             0.82             0.50             1.63                 0.0092                0.0143
+
+[3] Diferencias pareadas (mismas muestras bootstrap)
+comparación                 AUROC                 AUPRC                        Brier
+    RF - LR -0.008 (-0.030-0.013) -0.003 (-0.034-0.019)  -0.00001 (-0.00014-0.00014)
+    ET - LR +0.007 (-0.011-0.026) +0.009 (-0.020-0.041)  -0.00003 (-0.00016-0.00010)
+   XGB - LR +0.011 (-0.007-0.029) -0.005 (-0.030-0.011)  +0.00004 (-0.00006-0.00015)
+ Stack - LR +0.008 (-0.007-0.022) -0.001 (-0.021-0.011)  -0.00002 (-0.00011-0.00008)
+Stack - XGB -0.003 (-0.018-0.013) +0.004 (-0.003-0.014) -0.00006 (-0.00012--0.00001)
+
+[4] Eventos captados en el 5% / 10% de las admisiones con mayor riesgo predicho
+modelo   sens. 5% superior VPP 5% superior   sens. 0% superior VPP 0% superior
+    LR 0.120 (0.071-0.180)           0.056 0.197 (0.133-0.261)           0.046
+    RF 0.165 (0.101-0.230)           0.077 0.282 (0.207-0.355)           0.066
+    ET 0.168 (0.114-0.241)           0.078 0.274 (0.203-0.350)           0.064
+   XGB 0.142 (0.092-0.192)           0.066 0.265 (0.196-0.341)           0.062
+ Stack 0.145 (0.097-0.210)           0.068 0.282 (0.208-0.357)           0.066
+
+[5] Beneficio neto por probabilidad umbral
+estrategia  pt=0.005  pt=0.01  pt=0.02  pt=0.03  pt=0.05   pt=0.1  pt=0.15   pt=0.2
+        LR   0.01845  0.01124  0.00451  0.00171  0.00031  0.00024  0.00015 -0.00002
+        RF   0.01829  0.01046  0.00523  0.00363  0.00060  0.00000  0.00000  0.00000
+        ET   0.01825  0.01058  0.00644  0.00292  0.00114 -0.00002  0.00000  0.00000
+       XGB   0.01839  0.01108  0.00526  0.00255  0.00013  0.00003 -0.00007 -0.00005
+     Stack   0.01851  0.01047  0.00546  0.00361  0.00100 -0.00004  0.00000  0.00000
+  TreatAll   0.01841  0.01346  0.00339 -0.00689 -0.02808 -0.08520 -0.14903 -0.22085
+
+[6] Calibración por decil de riesgo predicho (media de las repeticiones)
+ decil   n  LR_pred  LR_obs  Stack_pred  Stack_obs
+     1 502   0.0049  0.0080      0.0056     0.0080
+     2 512   0.0064  0.0097      0.0065     0.0077
+     3 494   0.0072  0.0081      0.0070     0.0103
+     4 501   0.0081  0.0159      0.0076     0.0193
+     5 499   0.0091  0.0287      0.0083     0.0233
+     6 501   0.0106  0.0180      0.0094     0.0226
+     7 502   0.0130  0.0206      0.0123     0.0179
+     8 501   0.0178  0.0413      0.0186     0.0326
+     9 502   0.0247  0.0372      0.0248     0.0259
+    10 502   0.0432  0.0458      0.0422     0.0657
+
+[7] Hiperparámetros elegidos en los ciclos internos del conjunto de desarrollo
+modelo                 configuración  veces elegida
+    ET               depth=4,cw=None              2
+    ET depth=4,cw=balanced_subsample              1
+    LR                 C=1.0,cw=None              2
+    LR            C=0.01,cw=balanced              1
+    RF               depth=8,cw=None              2
+    RF               depth=4,cw=None              1
+   XGB              depth=1,spw=sqrt              2
+   XGB                 depth=4,spw=1              1

@@ -1,13 +1,13 @@
 """Gate G3, planning step: minimum sample size with an assumed Cox-Snell R2 (15% of its maximum, the conservative
 default of Riley et al.), before any candidate model is fitted. Uses only aggregate counts (no database access).
-The reassessment step, with the observed out-of-fold R2, is in notebooks 02, 08 and 10.
+The reassessment step, with the observed out-of-fold R2, is in notebooks 03, 07 and 10.
 Writes data/outputs_g3_planning.txt. Run from the repository root: python scripts/g3_planning_assumed_r2.py
 """
 import math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-# (outcome, candidate parameters, admissions, events): counts of notebooks 02 and 08 (aggregates)
+# (outcome, candidate parameters, admissions, events): counts of notebooks 03 and 07 (aggregates)
 CASES = [("maternal death (M1)", 32, 19383, 3),
          ("SMM, main model (M2)", 32, 19383, 445),
          ("SMM, return R4 (extended laboratory set)", 54, 19383, 445),

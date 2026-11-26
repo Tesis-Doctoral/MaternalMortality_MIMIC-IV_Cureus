@@ -7,7 +7,7 @@
 -- Same definition as 03_escalation_counts.sql (which returns counts only):
 --   (e1) ICU admission with intime after T                (icustays.intime, exact time)
 --   (e2) invasive mechanical ventilation started after T  (procedureevents itemid 225792, exact time; ICU only)
---   (e3) procedure-based SMM indicator dated after T      (procedures_icd.chartdate >= T, same rule as notebook 07)
+--   (e3) procedure-based SMM indicator dated after T      (procedures_icd.chartdate >= T, same rule as notebook 01)
 --   (e4) in-hospital death after T                        (admissions.deathtime)
 -- Population: eligible delivery hospitalizations WITHOUT an ICU admission before T
 -- (they are already escalated at the prediction point).
@@ -16,7 +16,7 @@
 --   mimiciv.escalation_v3   one row per admission of the population, with the four
 --                           component flags and the composite (escalation_any).
 -- Expected (Q-E1 of 03_escalation_counts.sql): 19,268 admissions, 101 with escalation.
--- Read by notebooks/08_landmark_incident_smm.ipynb, section 11.
+-- Read by notebooks/07_landmark_incident_smm.ipynb, section 11.
 -- Run after 01_timing_flags_v3.sql.  The check query returns aggregates only.
 -- ============================================================================
 SET max_parallel_workers_per_gather = 0;

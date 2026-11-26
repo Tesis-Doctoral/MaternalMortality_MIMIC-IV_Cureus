@@ -7,7 +7,7 @@
 -- Misma definición que 03_escalation_counts.sql (que solo devuelve conteos):
 --   (e1) ingreso a UCI con intime después de T              (icustays.intime, hora exacta)
 --   (e2) ventilación mecánica invasiva iniciada después de T  (procedureevents itemid 225792, hora exacta; solo UCI)
---   (e3) indicador de SMM por procedimiento fechado después de T (procedures_icd.chartdate >= T, misma regla del notebook 07)
+--   (e3) indicador de SMM por procedimiento fechado después de T (procedures_icd.chartdate >= T, misma regla del notebook 01)
 --   (e4) muerte intrahospitalaria después de T (admissions.deathtime)
 -- Población: hospitalizaciones de parto elegibles SIN ingreso a UCI antes de T
 -- (ya están escaladas en el punto de predicción).
@@ -16,7 +16,7 @@
 --   mimiciv.escalation_v3   una fila por admisión de la población, con las cuatro
 --                           marcas de componente y el compuesto (escalation_any).
 -- Esperado (Q-E1 de 03_escalation_counts.sql): 19.268 admisiones, 101 con escalamiento.
--- La lee notebooks/08_landmark_incident_smm.ipynb, sección 11.
+-- La lee notebooks/07_landmark_incident_smm.ipynb, sección 11.
 -- Ejecutar después de 01_timing_flags_v3.sql.  La consulta de control devuelve solo agregados.
 -- ============================================================================
 SET max_parallel_workers_per_gather = 0;

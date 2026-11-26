@@ -7,7 +7,7 @@ Versión en inglés: [`decision_G4_fitted_models_2026-11-22.md`](decision_G4_fit
 
 ## Contexto
 
-El notebook 08 evaluó los criterios C1 (población *landmark*) y C2 (SMM incidente documentada y estricta) **volviendo a ajustar** el modelo completo, con sus 32 parámetros, dentro de cada subconjunto: 285, 114 y 83 eventos. Lo mismo ocurrió en los períodos de desarrollo de la validación temporal (criterio C4, notebook 09): 209 eventos para el modelo principal y 46 para el escalamiento de la atención. La puerta P3 se había aplicado solo a la población completa de cada desenlace, así que esos ajustes nunca se verificaron contra ella. Con 46 eventos, el período de desarrollo del escalamiento queda por debajo de lo que P3 exige para 32 parámetros (194 eventos) y para los 13 del modelo reducido (89 eventos).
+El notebook 07 evaluó los criterios C1 (población *landmark*) y C2 (SMM incidente documentada y estricta) **volviendo a ajustar** el modelo completo, con sus 32 parámetros, dentro de cada subconjunto: 285, 114 y 83 eventos. Lo mismo ocurrió en los períodos de desarrollo de la validación temporal (criterio C4, notebook 09): 209 eventos para el modelo principal y 46 para el escalamiento de la atención. La puerta P3 se había aplicado solo a la población completa de cada desenlace, así que esos ajustes nunca se verificaron contra ella. Con 46 eventos, el período de desarrollo del escalamiento queda por debajo de lo que P3 exige para 32 parámetros (194 eventos) y para los 13 del modelo reducido (89 eventos).
 
 ## Regla (agregada al framework en esta fecha)
 
@@ -18,7 +18,7 @@ El notebook 08 evaluó los criterios C1 (población *landmark*) y C2 (SMM incide
 
 ## Análisis (una sola corrida)
 
-Notebook `10_g4_criteria_fitted_models_es.ipynb`, con la misma semilla, particiones, repeticiones y grillas de los notebooks 02 y 08, *bootstrap* B = 1.000:
+Notebook `10_g4_criteria_fitted_models_es.ipynb`, con la misma semilla, particiones, repeticiones y grillas de los notebooks 03 y 07, *bootstrap* B = 1.000:
 
 - Cuatro modelos, ajustados una vez cada uno: modelo principal (M2), retorno R4 (laboratorios ampliados), retorno R2 (escalamiento, 32 parámetros) y retorno R2 tras la reducción por tamaño de muestra (13 parámetros).
 - C1 y C2 sobre sus predicciones fuera de muestra; para el escalamiento, además cada componente frente a las admisiones sin escalamiento y el solapamiento de los componentes.
@@ -28,11 +28,11 @@ Salidas: `data/outputs_g4_fitted_models.txt` y `data/outputs_g3_fitted_subsets.t
 
 ## Qué pasa con los resultados anteriores
 
-Las clasificaciones de los notebooks 08 y 09 se conservan en sus reportes por trazabilidad. La clasificación en la puerta P4 se vuelve a establecer con los resultados del notebook 10 y se registra abajo.
+Las clasificaciones de los notebooks 07 y 09 se conservan en sus reportes por trazabilidad. La clasificación en la puerta P4 se vuelve a establecer con los resultados del notebook 10 y se registra abajo.
 
 ## Resultado
 
-Corrida del 22/11/2026 con las versiones de software del artículo (scikit-learn 1.6.1, XGBoost 3.0.2); los valores de la población completa reproducen el notebook 02 (AUROC de XGBoost 0,791). XGBoost, intervalos de 95% por *bootstrap* de pacientes:
+Corrida del 22/11/2026 con las versiones de software del artículo (scikit-learn 1.6.1, XGBoost 3.0.2); los valores de la población completa reproducen el notebook 03 (AUROC de XGBoost 0,791). XGBoost, intervalos de 95% por *bootstrap* de pacientes:
 
 | Modelo | C1 | C2 | C4 | Clasificación |
 |---|---|---|---|---|

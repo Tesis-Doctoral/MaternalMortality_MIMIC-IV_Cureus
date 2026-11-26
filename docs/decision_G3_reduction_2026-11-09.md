@@ -41,7 +41,7 @@ Single run, XGBoost as primary model, same nested cross-validation grouped by pa
   otherwise the escalation result remains an exploratory signal. The result is reported whatever it is,
   stating that the rule was added after the second classification.
 
-Code: notebooks/08_landmark_incident_smm.ipynb section 15; notebooks/09_temporal_validation_smm.ipynb section 10.
+Code: notebooks/07_landmark_incident_smm.ipynb section 15; notebooks/09_temporal_validation_smm.ipynb section 10.
 Outputs: data/outputs_escalation_reduced_summary.txt; data/outputs_cut2017_escalation_reduced.txt.
 
 ## Result (recorded after the single run, 2026-11-09)
