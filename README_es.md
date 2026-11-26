@@ -10,7 +10,7 @@ Autores: Emmanuel Gutiérrez Jiménez y José Duván Márquez Díaz — Departam
 
 > **Este repositorio no incluye datos a nivel de paciente.** MIMIC-IV requiere acceso acreditado (ver [Acceso a los datos](#acceso-a-los-datos)). Los archivos SQL solo contienen definiciones de esquema, lógica de cohorte y listas de códigos; las salidas de los notebooks en `data/` son conteos y métricas agregadas, con celdas menores de 10 suprimidas. No se publican valores de `subject_id`, `hadm_id` ni `stay_id`.
 
-> **Estado (22/11/2026).** Los modelos M1 y M2 del catálogo del framework están completos. El notebook 10 evalúa los criterios de la puerta P4 sobre los modelos ajustados una sola vez en toda su población y aplica la puerta P3 a todo conjunto en el que se ajusta un modelo (decisión del 22/11/2026, [`docs/decision_G4_fitted_models_2026-11-22.md`](docs/decision_G4_fitted_models_2026-11-22.md)); resultados registrados en el libro de decisiones.
+> **Estado (26/11/2026).** Los modelos M1 y M2 del catálogo del framework están completos y los notebooks en español están ejecutados. Los notebooks siguen el orden del framework: el 01 empieza con el gobierno y la configuración (E1) y con el desenlace ideal, la muerte materna (M1). El notebook 10 evalúa los criterios de la puerta P4 sobre los modelos ajustados una sola vez en toda su población y aplica la puerta P3 a todo conjunto en el que se ajusta un modelo (decisión del 22/11/2026, [`docs/decision_G4_fitted_models_2026-11-22.md`](docs/decision_G4_fitted_models_2026-11-22.md)); resultados registrados en el libro de decisiones. Con el framework 1.3 (C1 se decide solo con la caída del AUROC; C4 exige un AUROC temporal de 0,70 o más y una pendiente de calibración entre 0,90 y 1,10; la clase «ninguno» pasa a llamarse «señal insuficiente»), las clases de M1 y M2 no cambian.
 
 ## Alcance
 
@@ -48,24 +48,25 @@ MIMIC-IV v3.1 (Beth Israel Deaconess Medical Center, 2008–2022; fechas desplaz
 | 5 | `sql/05_predictors/` (`01`, `02`) | Predictores de la ventana de 24 horas y diccionario final | E6, E7 |
 | 6 | `sql/06_audit_counts/` (opcional) | Conteos del flujo de la cohorte y tablas cruzadas (solo tablas temporales) | E4, P1 |
 | 7 | `sql/07_timing_audit/` (`01` a `04`) | Momento de la evidencia de SMM, auditoría del fenotipo, etiqueta de escalamiento | E3, E4, R2 |
+| 8 | `sql/08_tables/` (`01`, `02`; opcional) | Tabla 1 del artículo y disponibilidad de cada predictor (suplemento 2); solo lectura | E7, E11 |
 
 **Notebooks** (se ejecutan de principio a fin; cada sección nombra la etapa, puerta o criterio que atiende):
 
 | Orden | Notebook | Crea (`data/`) | Etapa del framework |
 |---|---|---|---|
-| 1 | `01_smm_timing_vs_prediction_time.ipynb` | `outputs_smm_timing.txt` | E1, E2, E3, E4, P1 |
+| 1 | `01_smm_timing_vs_prediction_time.ipynb` | `outputs_smm_timing.txt` | E1, E2, E3, E4, P1 (incluye M1: escalera de desenlaces y conteos de muerte materna) |
 | 2 | `02_patient_overlap.ipynb` | Solo conteos en consola | E5, P2 |
 | 3 | `03_grouped_validation_smm.ipynb` | `outputs_main.txt`, `outputs_modelA.txt` (muerte materna), sensibilidades `first_admission`, `any_obstetric`, `icd10_only`, `label_ge2`, `no_icu_24h`, `labs_extended`, `icu_vars` | E6, E7, P3, R1, E8, E9 |
 | 4 | `04_resampling_comparison_smm.ipynb` | `outputs_resampling.txt` | E8 |
 | 5 | `05_creatinine_indicator_sensitivity_smm.ipynb` | `outputs_no_indicator.txt` | E9 (E7) |
 | 6 | `06_smm_renal_only_sensitivity.ipynb` | `outputs_excl_renal_only.txt` | E9 (E3) |
-| 7 | `07_landmark_incident_smm.ipynb` | `outputs_landmark*.txt`, `outputs_incident_*.txt`, `outputs_aki_lab_incident*.txt`, `outputs_c3_labs_summary.txt`, `outputs_excl_nonacute.txt`, `outputs_richer_predictors_summary.txt`, `outputs_escalation*.txt`, `outputs_g3_escalation.txt`, `outputs_main_norace.txt`, `outputs_race_subgroups.txt` | E9, P4 (C1–C3), R4, R2, P3, reducción en P3, E10 |
+| 7 | `07_landmark_incident_smm.ipynb` | `outputs_landmark*.txt`, `outputs_incident_*.txt`, `outputs_aki_lab_incident*.txt`, `outputs_c3_labs_summary.txt`, `outputs_excl_nonacute.txt`, `outputs_richer_predictors_summary.txt`, `outputs_escalation*.txt`, `outputs_g3_escalation.txt`, `outputs_main_norace.txt`, `outputs_race_subgroups.txt`, `outputs_main_rerun12.txt` y `outputs_landmark_rerun12.txt` (sección 12: mismos modelos con *bootstrap* B = 300) | E9, P4 (C1–C3), R4, R2, P3, reducción en P3, E10 |
 | 8 | `08_era_temporal_validation_smm.ipynb` | `outputs_era_temporal.txt` | E9 (C4, exploratorio) |
 | 9 | `09_temporal_validation_smm.ipynb` | `outputs_cut2017*.txt`, `outputs_cut2015.txt`, `outputs_temporal_summary.txt`, `outputs_temporal_predictors.txt` | E9, P4 (C4) |
-| 10 | `10_g4_criteria_fitted_models_es.ipynb` | `outputs_g4_fitted_models.txt` (C1 y C2 con intervalos de 95%, componentes del escalamiento), `outputs_g3_fitted_subsets.txt` | P4 (C1, C2) sobre los modelos ajustados, P3 para todo conjunto ajustado, E10, E11 |
+| 10 | `10_g4_criteria_fitted_models.ipynb` | `outputs_g4_fitted_models.txt` (C1 y C2 con intervalos de 95%, componentes del escalamiento), `outputs_g3_fitted_subsets.txt` | P4 (C1, C2) sobre los modelos ajustados, P3 para todo conjunto ajustado, E10, E11 |
 | — | `scripts/g3_planning_assumed_r2.py` (no requiere la base de datos) | `outputs_g3_planning.txt` | P3, paso de planeación con un R² supuesto |
 
-Cada notebook tiene una versión en inglés y otra en español (`_es`) con el mismo código; solo cambia `LANG` en la primera celda. Los notebooks en español muestran sus tablas y mensajes en español (`libraries/i18n.py`, `libraries/i18n_es.py`) y también escriben una copia en español de cada reporte (`data/outputs_*_es.txt`); los reportes en inglés `data/outputs_*.txt` que cita el artículo se escriben exactamente como antes. Cada script SQL tiene una versión en español con el sufijo `_es` (mismas sentencias, comentarios traducidos).
+Cada notebook tiene una versión en inglés y otra en español (`_es`) con el mismo código; solo cambia `LANG` en la primera celda. Cada sección empieza con el código de la etapa, puerta o criterio y una tabla de resultado → acción, y su salida muestra la decisión tomada; cada notebook termina con un «Resumen del notebook». Los notebooks en español muestran sus tablas y mensajes en español (`libraries/i18n.py`, `libraries/i18n_es.py`) y también escriben una copia en español de cada reporte (`data/outputs_*_es.txt`); los reportes en inglés `data/outputs_*.txt` que cita el artículo se escriben exactamente como antes. Cada script SQL tiene una versión en español con el sufijo `_es` (mismas sentencias, comentarios traducidos).
 
 ## Mapa del framework
 
@@ -73,7 +74,7 @@ Cada notebook tiene una versión en inglés y otra en español (`_es`) con el mi
 
 | Etapa, puerta o retorno | Scripts y notebooks |
 |---|---|
-| E1 Gobierno y configuración | `sql/01_load_mimic_iv_schema/`; sección 1 de cada notebook |
+| E1 Gobierno y configuración | `sql/01_load_mimic_iv_schema/`; sección E1 del notebook 01 (fuente, acuerdo de uso, semilla, software y regla de publicación); sección 1 de cada notebook |
 | E2 Universo y población | `sql/02_cohort_mortality/maternal_cohort_expanded.sql`; `sql/04_labels/02_delivery_flag.sql`, `04_cohort_obstetric_flags.sql` |
 | E3 Definición del desenlace | `sql/04_labels/01_smm_codes_official.sql`, `03_labels_same_admission.sql`; `sql/07_timing_audit/01_timing_flags_v3.sql`, `02_phenotype_audit_v3.sql`; notebook 01 |
 | E4 Auditoría de conteos · P1 | `sql/06_audit_counts/`; `sql/04_labels/03b_reconcile_old_labels.sql`, `06_smm_death_overlap.sql`; notebook 01; verificación `EXPECTED` en cada notebook |
@@ -88,9 +89,9 @@ Cada notebook tiene una versión en inglés y otra en español (`_es`) con el mi
 | P4 Puerta de clasificación | notebook 07 (C1, C2, C3), notebook 09 (C4), notebook 10 (C1 y C2 sobre los modelos ajustados) |
 | R2 | `sql/07_timing_audit/03_escalation_counts.sql`, `04_escalation_label.sql`; notebook 07 secciones 11 y 14; notebook 09 |
 | R4 | notebook 07 secciones 10 y 13; notebook 09 `cut2017_landmark_labs` |
-| Reducción en P3 | notebook 07 secciones 15 y 16; notebook 09 sección 10; [`docs/decision_G3_reduction_2026-11-09.md`](docs/decision_G3_reduction_2026-11-09.md) |
+| Reducción en P3 | notebook 07 secciones 15 y 16; notebook 09 sección 10; [`docs/decision_G3_reduction_2026-11-09_es.md`](docs/decision_G3_reduction_2026-11-09_es.md) |
 | E10 De la clasificación a la acción | notebook 07 sección 12 (raza y etnia, subgrupos) |
-| E11 Reporte | `data/outputs_*.txt`; `scripts/fig_cohort_funnel.py`, `scripts/fig_framework.py` |
+| E11 Reporte | `data/outputs_*.txt`; `sql/08_tables/`; `scripts/fig_cohort_funnel.py`, `scripts/fig_framework.py`; resumen al final de cada notebook |
 
 Los scripts de la primera versión del análisis (`sql/02_cohort_mortality/` salvo `maternal_cohort_expanded.sql`, y `sql/03_cohort_smm/`) se conservan por trazabilidad; los grupos de diagnósticos de egreso que construyen se retiraron en la puerta P2.
 
@@ -98,9 +99,10 @@ Los scripts de la primera versión del análisis (`sql/02_cohort_mortality/` sal
 
 | Fecha | Decisión | Archivo |
 |---|---|---|
-| 09/11/2026 | Regla nueva: reducción en P3 después de la segunda clasificación, con el conjunto reducido de predictores fijado antes de correrla | [`docs/decision_G3_reduction_2026-11-09.md`](docs/decision_G3_reduction_2026-11-09.md) |
-| 11/11/2026 | Modelo principal según eventos por parámetro | [`docs/decision_primary_learner_EPP_2026-11-11.md`](docs/decision_primary_learner_EPP_2026-11-11.md) |
+| 09/11/2026 | Regla nueva: reducción en P3 después de la segunda clasificación, con el conjunto reducido de predictores fijado antes de correrla | [`docs/decision_G3_reduction_2026-11-09_es.md`](docs/decision_G3_reduction_2026-11-09_es.md) |
+| 11/11/2026 | Modelo principal según eventos por parámetro | [`docs/decision_primary_learner_EPP_2026-11-11_es.md`](docs/decision_primary_learner_EPP_2026-11-11_es.md) |
 | 22/11/2026 | Criterios de P4 sobre los modelos ajustados; puerta P3 para todo conjunto en el que se ajusta un modelo; P3 en dos pasos (planeación y reevaluación); banda de tolerancia de C4 como sensibilidad; intervalos de 95% para toda cantidad de decisión | [`docs/decision_G4_fitted_models_2026-11-22_es.md`](docs/decision_G4_fitted_models_2026-11-22_es.md) |
+| 23/11/2026 | Framework 1.3: C1 se decide solo con la caída del AUROC (la parte de la ganancia de AUPRC que se conserva se reporta, pero no decide); C4 con AUROC temporal de 0,70 o más y pendiente de calibración entre 0,90 y 1,10; la clase «ninguno» se llama «señal insuficiente». Las clases de M1 y M2 no cambian | [StagedFramework_ClinicalPrediction](https://github.com/Tesis-Doctoral/StagedFramework_ClinicalPrediction) |
 
 ## Instalación y ejecución
 

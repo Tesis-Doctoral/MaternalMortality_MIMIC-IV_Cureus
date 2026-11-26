@@ -1,5 +1,7 @@
 # Decision log entry — new framework rule "P3 reduction" (2026-11-09)
 
+Spanish version: [`decision_G3_reduction_2026-11-09_es.md`](decision_G3_reduction_2026-11-09_es.md).
+
 > Nomenclature note (2026-11-11): in the English article and code, gate P3 is the sample-size gate G3, P4 the classification gate G4, and stage E7 is S7; this rule is named the *sample-size reduction*. The entry below keeps the codes used when it was recorded. File renamed on 2026-11-13 from `decision_P3_reduction_2026-11-09.md`; the rule was first committed on 2026-11-09 (commit c761e64), before the analysis was run.
 
 **Stage / gate:** P3 (sample size), after the second P4 classification. **Type of reason:** methodological.

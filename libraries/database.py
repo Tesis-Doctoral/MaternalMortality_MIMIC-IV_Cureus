@@ -3,15 +3,9 @@
 database.py -- Maternal Mortality / SMM MIMIC-IV project
 
 Connection and query functions for Modelo A (maternal mortality,
-in-hospital) and Modelo B (severe maternal morbidity / near-miss),
-mirroring the structure of libraries/database.py in the companion
-neonatal-mortality repository (Stacked-Model-Neonatal-MimicIV).
-
-This file merges what was previously split across three exploratory
-files in the mixed project (database.py, database_maternal_addition.py,
-database_smm_addition.py) into a single module, as the maternal/SMM
-project's own libraries/database.py. Nothing here has been executed yet
-against a live database -- see README.md before running.
+in-hospital) and Modelo B (severe maternal morbidity / near-miss).
+Connection parameters come from environment variables (see .env.example);
+see README.md before running.
 """
 import os
 import sqlalchemy as alchemy

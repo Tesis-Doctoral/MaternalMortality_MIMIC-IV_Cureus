@@ -1,5 +1,7 @@
 # Decision log entry — primary learner chosen by events per parameter (2026-11-11)
 
+Spanish version: [`decision_primary_learner_EPP_2026-11-11_es.md`](decision_primary_learner_EPP_2026-11-11_es.md).
+
 **Stage:** S8 (modeling, validation and metrics); decision D16. **Type of reason:** methodological.
 **Status:** proposed by the first author; to be validated by the thesis supervisor.
 **Scope:** prospective. It applies to outcomes analysed **after** this date (perinatal and neonatal outcomes

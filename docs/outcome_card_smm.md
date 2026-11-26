@@ -28,10 +28,10 @@ Criteria C1 and C2 are evaluated on the model fitted once on its whole populatio
 | G1 Definition | Passes | Reference counts reproduced in every notebook (`EXPECTED`) | — |
 | G2 Leakage | Passes | No discharge-diagnosis groups; no information after T; no patient on both sides of a split | — |
 | G3 Sample size | Passes | Planning (assumed Cox-Snell R² 0.030, 15% of the maximum): 9,614 admissions and 221 events required. Reassessment (observed out-of-fold R² 0.0311): 9,112 and 209. Available: 19,383 and 445. 32 parameters (columns after one-hot encoding, no intercept) | Maternal death (M1, 3 events) fails: return R1 to SMM |
-| G4 C1 Events present | Not met | AUROC 0.791 → 0.719 (0.686–0.750) in the landmark population; drop 0.072 (0.056–0.088); 40% (30–51%) of the AUPRC gain kept | — |
+| G4 C1 Events present | Not met | AUROC 0.791 → 0.719 (0.686–0.750) in the landmark population; drop 0.072 (0.056–0.088); 40% (30–51%) of the AUPRC gain kept (reported; does not decide C1) | — |
 | G4 C2 Outcome with time | Met | Documented incident SMM 0.765 (0.713–0.816); strict incident 0.784 (0.721–0.843) | — |
 | G4 C3 Detection bias | Not met | Renal failure dated by creatinine: 0.850 (0.822–0.872) overall, 0.628 (0.584–0.671) among tested patients | — |
-| G4 C4 Stability | Not met | Temporal AUROC 0.747 (0.707–0.783); slope 0.83 (0.71–0.97); O/E 1.34 (1.15–1.52). Development period passes G3. With the slope tolerance band 0.90–1.10 (sensitivity): not met | — |
+| G4 C4 Stability | Not met | Temporal AUROC 0.747 (0.707–0.783); slope 0.83 (0.71–0.97); O/E 1.34 (1.15–1.52). Development period passes G3. With the rule of framework 1.3 (temporal AUROC of 0.70 or more and slope between 0.90 and 1.10): not met | — |
 | **G4 Classification** | **Early identifier** | AUROC 0.791 (0.767–0.816); top 10% holds 51.4% of the events | Returns R4 and R2 |
 
 ## 4. Returns and sample-size reduction
