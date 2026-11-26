@@ -584,3 +584,25 @@ def _norm(k, v):
     # a comma right after a number belongs to the number in the English line ("3, binary"), so it is not repeated
     return nk, _NUM.sub("#", v).replace("#,", "#")
 ES = dict(_norm(k, v) for k, v in ES.items())
+
+# Notebook 11 (ROC curves and classification report of the SMM model) and libraries/figures.py
+ES.update(dict(_norm(k, v) for k, v in {
+    "Check: AUROC of each learner (mean of the repeats) against the article": "Verificación: AUROC de cada algoritmo (promedio de las repeticiones) frente al artículo",
+    "AUROC article": "AUROC del artículo", "AUROC this run": "AUROC de esta corrida",
+    "QUICK = True: the check is not meaningful; never use these figures": "QUICK = True: la verificación no tiene sentido; nunca usar estas figuras",
+    "SMM, main analysis: patient-grouped cross-validation (out-of-fold, repeat 1)": "SMM, análisis principal: validación cruzada agrupada por paciente (fuera de muestra, repetición 1)",
+    "Final model (XGBoost), top 10% of risk": "Modelo final (XGBoost), 10% de mayor riesgo",
+    "Threshold metrics at the top 10% of risk (out-of-fold, repeat 1)": "Métricas en el corte del 10% de mayor riesgo (fuera de muestra, repetición 1)",
+    "1 - specificity (false positive rate)": "1 - especificidad (tasa de falsos positivos)",
+    "Sensitivity (true positive rate)": "Sensibilidad (tasa de verdaderos positivos)",
+    "precision": "precisión", "recall": "sensibilidad (recall)", "f1-score": "F1", "accuracy": "exactitud", "macro avg": "promedio macro",
+    "Metrics": "Métricas", "Classes": "Clases", "risk cut": "corte de riesgo", "Predicted label": "Clase predicha",
+    "True label": "Clase real", "Confusion matrix": "Matriz de confusión",
+    "TP": "VP", "FP": "FP", "FN": "FN", "TN": "VN", "F1": "F1", "sensitivity": "sensibilidad", "specificity": "especificidad",
+    "PPV": "VPP", "NPV": "VPN",
+    "admissions / SMM events": "admisiones / eventos de SMM", "check against the article": "verificación frente al artículo",
+    "AUROC by learner (mean of the repeats)": "AUROC por algoritmo (promedio de las repeticiones)",
+    "final model": "modelo final", "XGBoost (primary learner)": "XGBoost (algoritmo principal)",
+    "XGBoost at the top 10% of risk: sensitivity / PPV": "XGBoost con el 10% de mayor riesgo: sensibilidad / VPP",
+    "figures": "figuras",
+}.items()))

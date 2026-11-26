@@ -1,0 +1,15 @@
+Check: AUROC of each learner (mean of the repeats) against the article
+learner  AUROC article  AUROC this run     result
+     LR          0.780           0.780 reproduced
+     RF          0.777           0.777 reproduced
+     ET          0.770           0.770 reproduced
+    XGB          0.791           0.791 reproduced
+  Stack          0.789           0.789 reproduced
+Threshold metrics at the top 10% of risk (out-of-fold, repeat 1)
+         risk cut   TP    FP   FN     TN  accuracy      F1  sensitivity  specificity     PPV      NPV
+learner                                                                                              
+LR         0.0516  203  1736  242  17202    0.8980  0.1703       0.4562       0.9083  0.1047  0.98613
+RF         0.0449  226  1713  219  17225    0.9003  0.1896       0.5079       0.9095  0.1166  0.98745
+ET         0.0563  226  1713  219  17225    0.9003  0.1896       0.5079       0.9095  0.1166  0.98745
+XGB        0.0488  226  1714  219  17224    0.9003  0.1895       0.5079       0.9095  0.1165  0.98744
+Stack      0.0499  232  1707  213  17231    0.9009  0.1946       0.5213       0.9099  0.1196  0.98779
